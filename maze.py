@@ -8,17 +8,22 @@ class Maze:
             self.exit = exit
 
             self.walls = {
-                'North': False,
-                'East': False,
-                'South': False,
-                'West': False
+                'North': True,
+                'East': True,
+                'South': True,
+                'West': True
             }
 
-    def __init__(self, w: int, h: int, start: bool, exit: bool) -> None:
+            self.visited = False
+
+    def __init__(self, w: int, h: int, start: tuple, exit: tuple) -> None:
         self.width = w
         self.height = h
 
-        self.grid = [
-            [Maze.Cell() for x in range(w)]
-            for y in range(h)
-        ]
+        self.grid = []
+        for y in range(h):
+            self.grid.append([])
+            for x in range(w):
+                is_start = start[0] == x and start[1] == y
+                is_exit = exit[0] == x and exit[1] == y
+                self.grid[y][x] = Maze.Cell(is_start, is_exit)
