@@ -16,7 +16,7 @@ class Maze:
 
             self.visited = False
 
-    def __init__(self, w: int, h: int, start: tuple, exit: tuple) -> None:
+    def __init__(self, w: int, h: int, st: list[int], ext: list[int]) -> None:
         self.width = w
         self.height = h
 
@@ -24,6 +24,6 @@ class Maze:
         for y in range(h):
             self.grid.append([])
             for x in range(w):
-                is_start = start[0] == x and start[1] == y
-                is_exit = exit[0] == x and exit[1] == y
-                self.grid[y][x] = Maze.Cell(is_start, is_exit)
+                start = [x, y] == st
+                exit = [x, y] == ext
+                self.grid.append = Maze.Cell(start, exit)
