@@ -14,11 +14,18 @@ class Maze:
                 'West': False
             }
 
-    def __init__(self, w: int, h: int, start: bool, exit: bool) -> None:
+    def __init__(self, w: int, h: int, st: list[int], ext: list[int]) -> None:
         self.width = w
         self.height = h
+        self.grid = []
 
-        self.grid = [
-            [Maze.Cell() for x in range(w)]
-            for y in range(h)
-        ]
+        for y in range(h):
+            self.grid.append([])
+            for x in range(w):
+                start = [x, y] == st
+                exit = [x, y] == ext
+
+                self.grid[y].append(Maze.Cell(start, exit))
+
+    def randomize(self) -> None:
+        pass
