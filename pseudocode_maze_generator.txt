@@ -1,0 +1,16 @@
+=== PERFECT ===
+Depth-First Search:
+    - choose random point
+    - go to random direction and break wall
+    - if every direction is visited go back until there are possibilities
+
+Hunt and Kill:
+    - choose random point
+    - go to random direction and break wall
+    - if every direction is visited iterate matrix until a visited cell has possibilities
+
+
+=== IMPERFECT ===
+My algo:
+    - choose random point
+    - got to random direction and break wall
