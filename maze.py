@@ -80,7 +80,7 @@ class MazeGenerator:
     def gen_imperfect(self) -> None:
         pass
 
-    def output(self, output_file_path: str) -> None:
+    def output(self, out_fp: str, st: tuple, ext: tuple, path: str) -> None:
         """Writes the hex maze to the output file.
 
         Iterates each cell of the maze and concatenates it to the maze_out
@@ -91,10 +91,14 @@ class MazeGenerator:
 
         Args:
             output_file_path (str): Path of maze output file.
+            st (list[int, int]): x and y coordinates of maze start.
+            ext (list[int, int]): x and y coordinates of maze exit.
+            path (str): Path that solves the maze.
         """
-        maze_out: str = '\n'.join(
-                                  [''.join([cell.hex for cell in row])
+        maze_out: str = '\n'.join([''.join([cell.hex for cell in row])
                                    for row in self.grid])
 
-        with open(output_file_path, 'w') as output_file:
+        maze_out += f'\n\n{st[0]},{st[1]}\n{ext[0]},{ext[1]}\n' + path
+
+        with open(out_fp, 'w') as output_file:
             output_file.write(maze_out)
