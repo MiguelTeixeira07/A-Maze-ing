@@ -90,15 +90,32 @@ class MazeGenerator:
         solution for the maze created.
 
         Args:
-            output_file_path (str): Path of maze output file.
+            f (str): Path of maze output file.
             st (list[int, int]): x and y coordinates of maze start.
             ext (list[int, int]): x and y coordinates of maze exit.
-            path (str): Path that solves the maze.
+            sol (str): Maze solution path.
         """
-        maze_out: str = '\n'.join([''.join([cell.hex for cell in row])
-                                   for row in self.grid])
+        maze_string = ""
+        for y in range(self.height):
+            for x in range(self.width):
+                cell = self.grid[y][x]
 
-        maze_out += f'\n\n{st[0]},{st[1]}\n{ext[0]},{ext[1]}\n' + path
+                directions = 0
 
-        with open(out_fp, 'w') as output_file:
+                if cell.walls['North'][0]:
+                    directions |= (1 << 0)
+                if cell.walls['East'][0]:
+                    directions |= (1 << 1)
+                if cell.walls['South'][0]:
+                    directions |= (1 << 2)
+                if cell.walls['West'][0]:
+                    directions |= (1 << 3)
+
+                maze_string += format(directions, 'X')
+
+        maze_out += f'\n\n{st[0]},{st[1]}'
+        maze_out += f'\n{ext[0]},{ext[1]}'
+        maze_out += f'\n{sol}'
+
+        with open(f, 'w') as output_file:
             output_file.write(maze_out)
