@@ -13,7 +13,7 @@ def main() -> None:
 
     maze: mg = mg(flags['width'], flags['height'], flags['entry'], flags['exit'])
     path = 'SSSSSSSSSSSSSSSSSSSEEEEEEEEEEEEEE'
-    maze.gen_dfs()
+    maze.gen_hak()
     maze.output(flags['output_file'], flags['entry'], flags['exit'], path)
 
     with open(flags['output_file'], 'r') as output_file:

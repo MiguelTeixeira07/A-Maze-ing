@@ -2,3 +2,4 @@ __pycache__/
 config.txt
 output_validator.py
 *.txt
+*.png

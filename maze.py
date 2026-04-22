@@ -7,6 +7,8 @@ class MazeGenerator:
     Attributes:
         width (int): Maze width.
         height (int): Maze height.
+        start (MazeGenerator.Cell): Start of the maze
+        exit (MazeGenerator.Cell): Exit of the maze
         grid (list[list[MazeGenerator.Cell]]): Matrix with every cell.
     """
 
@@ -146,7 +148,28 @@ class MazeGenerator:
 
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
-        pass
+        rand.seed(42)
+        self.start.visited = True
+        cell = self.start
+
+        while True:
+            if self.directions(cell):
+                direction = rand.choice(self.directions(cell))
+                cell = self.move(cell, direction)
+                cell.visited = True
+
+            while not self.directions(cell):
+                found = False
+                for y in range(self.height):
+                    for x in range(self.width):
+                        if self.grid[y][x].visited:
+                            cell = self.grid[y][x]
+                            found = True
+                            break
+                    if found:
+                        break
+
+                return
 
     # My own algorithm - imperfect maze
     def gen_imperfect(self) -> None:
@@ -156,7 +179,7 @@ class MazeGenerator:
         rows = []
 
         for y in range(self.height):
-            row = ""
+            row = ''
             for x in range(self.width):
                 cell = self.grid[y][x]
 
