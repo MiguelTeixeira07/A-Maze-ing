@@ -30,7 +30,7 @@ class Walls():
 
     # 7 -> 0111
     def top_right_bottom():
-        print('═\n ║\n═')
+        print('═╗\n ║\n═╝')
 
     # 9 -> 1001
     def left_top_corner():
