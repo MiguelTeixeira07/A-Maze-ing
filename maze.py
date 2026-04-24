@@ -1,7 +1,7 @@
 import random as rand
 
 
-class MazeGenerator:
+class Maze:
     """One maze cell.
 
     Attributes:
@@ -65,20 +65,20 @@ class MazeGenerator:
         self.width: int = w
         self.height: int = h
 
-        self.grid: list[list[MazeGenerator.Cell]] = []
+        self.grid: list[list[Maze.Cell]] = []
         for y in range(h):
             self.grid.append([])
             for x in range(w):
                 start: bool = (x, y) == st
                 exit: bool = (x, y) == ext
-                self.grid[y].append(MazeGenerator.Cell(x, y, start, exit))
-                
+                self.grid[y].append(Maze.Cell(x, y, start, exit))
+
                 if start:
                     self.start = self.grid[y][x]
                 if exit:
                     self.exit = self.grid[y][x]
 
-    def directions(self, cell: 'MazeGenerator.Cell') -> list[str]:
+    def directions(self, cell: 'Maze.Cell') -> list[str]:
         dirs = []
 
         x, y = cell.x, cell.y
@@ -97,7 +97,7 @@ class MazeGenerator:
 
         return dirs
 
-    def move(self, cell: 'MazeGenerator.Cell', direction: str) -> 'MazeGenerator.Cell':
+    def move(self, cell: 'Maze.Cell', direction: str) -> 'Maze.Cell':
         x, y = cell.x, cell.y
 
         if direction == 'North':
@@ -127,7 +127,7 @@ class MazeGenerator:
     # Depth-first Search algorithm - perfect maze
     def gen_dfs(self) -> None:
         rand.seed(42)
-        history: list['MazeGenerator.Cell'] = [self.start]
+        history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
         cell = self.start
 
