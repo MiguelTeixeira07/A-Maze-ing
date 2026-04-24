@@ -27,15 +27,6 @@ def indexing_wall():
     return list_walls
 
 
-def width_table(width, eol):
-    i = 1
-    while i < width:
-        if width * i == eol:
-            return True
-        i += 1
-    return False
-
-
 if __name__ == '__main__':
     hex_data = file_to_data()
     list_walls = indexing_wall()
@@ -43,7 +34,7 @@ if __name__ == '__main__':
     width = getting_widht()
     eol = 0
     for data in hex_data:
-        if width_table(width, eol):
+        if eol % width == 0:
             print()
         print(*list_walls[int(data, 16) % 16], end='', sep='')
         eol += 1
