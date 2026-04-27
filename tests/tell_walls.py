@@ -20,6 +20,7 @@ def hex_to_walls(hex_value):
     else:
         print("No walls are up")
 
+
 # Example usage
 user_input = input("Enter hex value (e.g. A, 3, F): ")
 hex_to_walls(user_input)

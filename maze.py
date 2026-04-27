@@ -74,7 +74,6 @@ class Maze:
                 start: bool = (x, y) == st
                 exit: bool = (x, y) == ext
                 self.grid[y].append(Maze.Cell(x, y, start, exit))
-                
                 if start:
                     self.start = self.grid[y][x]
                 if exit:

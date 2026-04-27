@@ -1,6 +1,6 @@
 import sys
 from typing import Any
-from maze import MazeGenerator as mg
+from maze import Maze as mg
 from input_parser import get_flags
 
 
