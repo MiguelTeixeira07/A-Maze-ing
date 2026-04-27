@@ -1,15 +1,15 @@
 import random as rand
 
 
-class MazeGenerator:
+class Maze:
     """One maze cell.
 
     Attributes:
         width (int): Maze width.
         height (int): Maze height.
-        start (MazeGenerator.Cell): Start of the maze
-        exit (MazeGenerator.Cell): Exit of the maze
-        grid (list[list[MazeGenerator.Cell]]): Matrix with every cell.
+        start (Maze.Cell): Start of the maze
+        exit (Maze.Cell): Exit of the maze
+        grid (list[list[Maze.Cell]]): Matrix with every cell.
     """
 
     class Cell:
@@ -67,20 +67,32 @@ class MazeGenerator:
         self.width: int = w
         self.height: int = h
 
-        self.grid: list[list[MazeGenerator.Cell]] = []
+        self.grid: list[list[Maze.Cell]] = []
         for y in range(h):
             self.grid.append([])
             for x in range(w):
                 start: bool = (x, y) == st
                 exit: bool = (x, y) == ext
-                self.grid[y].append(MazeGenerator.Cell(x, y, start, exit))
+                self.grid[y].append(Maze.Cell(x, y, start, exit))
                 
                 if start:
                     self.start = self.grid[y][x]
                 if exit:
                     self.exit = self.grid[y][x]
 
-    def directions(self, cell: 'MazeGenerator.Cell') -> list[str]:
+    def directions(self, cell: 'Maze.Cell') -> list[str]:
+        """Gets all valid directions.
+
+        Checks each of the 4 neighbouring cells and adds them to the list if
+        not visited, so that every cell that was visited is not included, this
+        is what allows this algorithm to generate a perfect maze.
+
+        Args:
+            cell (Maze.Cell): Current cell.
+
+        Returns:
+            list[str]: List of every valid direction to move to.
+        """
         dirs = []
 
         x, y = cell.x, cell.y
@@ -99,37 +111,61 @@ class MazeGenerator:
 
         return dirs
 
-    def move(self, cell: 'MazeGenerator.Cell', direction: str) -> 'MazeGenerator.Cell':
+    def move(self, cell: 'Maze.Cell', direction: str) -> 'Maze.Cell':
+        """Moves a cell to a specified direction.
+
+        Determines what the next cell is, breaks the wall in that direction
+        and breaks the next cell's wall in the opposite direction.
+
+        Args:
+            cell (Maze.Cell): Current cell.
+            direction (str): Direction to move the cell to.
+
+        Returns:
+            Maze.Cell: New cell.
+        """
         x, y = cell.x, cell.y
+        next_cell = cell
 
-        if direction == 'North':
-            next_cell = self.grid[y - 1][x]
-            cell.walls['North'] = False
-            next_cell.walls['South'] = False
-            return next_cell
+        match direction:
+            case 'North':
+                next_cell = self.grid[y - 1][x]
+                cell.walls['North'] = False
+                next_cell.walls['South'] = False
 
-        if direction == 'East':
-            next_cell = self.grid[y][x + 1]
-            cell.walls['East'] = False
-            next_cell.walls['West'] = False
-            return next_cell
+            case 'East':
+                next_cell = self.grid[y][x + 1]
+                cell.walls['East'] = False
+                next_cell.walls['West'] = False
 
-        if direction == 'South':
-            next_cell = self.grid[y + 1][x]
-            cell.walls['South'] = False
-            next_cell.walls['North'] = False
-            return next_cell
+            case 'South':
+                next_cell = self.grid[y + 1][x]
+                cell.walls['South'] = False
+                next_cell.walls['North'] = False
 
-        if direction == 'West':
-            next_cell = self.grid[y][x - 1]
-            cell.walls['West'] = False
-            next_cell.walls['East'] = False
-            return next_cell
+            case 'West':
+                next_cell = self.grid[y][x - 1]
+                cell.walls['West'] = False
+                next_cell.walls['East'] = False
+        
+        return next_cell
 
     # Depth-first Search algorithm - perfect maze
     def gen_dfs(self) -> None:
+        """Generates a perfect maze with the depth-first-search algorithm.
+
+        Starts the generation on the entry of the maze.
+        While the maze is not fully generated, the algorithm will pick a
+        random direction and move there if it has not been visited yet.
+        When the algorithm gets to a dead-end, it traces back the path it made
+        there until it finds a cell that has neighbours which have not been
+        visited yet.
+        If it backtracks all the way back to the start, then it means all the
+        cells have been visited, therefore the maze has been fully generated,
+        with all cells accessible.
+        """
         rand.seed(42)
-        history: list['MazeGenerator.Cell'] = [self.start]
+        history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
         cell = self.start
 
