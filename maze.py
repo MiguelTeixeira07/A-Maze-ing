@@ -163,7 +163,7 @@ class Maze:
         cells have been visited, therefore the maze has been fully generated,
         with all cells accessible.
         """
-        rand.seed(42)
+        # rand.seed(42)
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
         cell = self.start
@@ -183,7 +183,7 @@ class Maze:
 
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
-        rand.seed(42)
+        # rand.seed(42)
         self.start.visited = True
         cell = self.start
 
@@ -228,7 +228,8 @@ class Maze:
                 if cell.walls['West']:
                     value |= 8
 
-                row += format(value, 'X')
+                cell.hex = format(value, 'X')
+                row += cell.hex
 
             rows.append(row)
 

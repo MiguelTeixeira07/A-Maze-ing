@@ -2,37 +2,17 @@ from enum import Enum
 
 
 class Walls(Enum):
-    EMPTY = "    "
+    EMPTY = "     "
 
-    TOP = ("▀▀▀▀", "    ")
+    TOP = "█████"
 
-    RIGHT = ("   █", "   █")
+    RIGHT = "    █"
 
-    TOP_RIGHT = ("▀▀▀█", "   █")
+    BOTTOM = "█████"
 
-    BOTTOM = ("    ", "▄▄▄▄")
+    LEFT = "█    "
 
-    TOP_BOTTOM = ("▀▀▀▀", "▄▄▄▄")
-
-    RIGHT_BOTTOM = ("   █", "▄▄▄█")
-
-    TOP_RIGHT_BOTTOM = ("▀▀▀█", "▄▄▄█")
-
-    LEFT = ("█   ", "█   ")
-
-    TOP_LEFT = ("█▀▀▀", "█   ")
-
-    RIGHT_LEFT = ("█  █", "█  █")
-
-    TOP_RIGHT_LEFT = ("█▀▀█", "█  █")
-
-    BOTTOM_LEFT = ("█   ", "█▄▄▄")
-
-    TOP_BOTTOM_LEFT = ("█▀▀▀", "█▄▄▄")
-
-    RIGHT_BOTTOM_LEFT = ("█  █", "█▄▄█")
-
-    ALL = ("█▀▀█", "█▄▄█")
+    LEFT_AND_RIGHT = "█   █"
 
     def __str__(self):
         return self.value

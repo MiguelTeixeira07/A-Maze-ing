@@ -1,60 +1,41 @@
-from walls import Walls
+from .walls import Walls
+from maze import Maze
 
 
-def file_to_data():
-    data = []
-    with open('../maze.txt', 'r') as hex_maze:
-        for line in hex_maze:
-            if not line.strip():
-                break
-            for char in line:
-                if char != '\n':
-                    data.append(char)
-    return data
+def printing_walls(maze: Maze, width: int, height: int) -> None:
+    for row in maze.grid:
+        for i in range(2):
+            place_in_row = 0
 
+            for cell in row:
+                if i == 0:
+                    if cell.walls['North']:
+                        print(Walls.TOP, end='')
+                    else:
+                        print(Walls.LEFT_AND_RIGHT, end='')
+                else:
+                    if cell.walls['East'] and cell.walls['West']:
+                        print(Walls.LEFT_AND_RIGHT, end='')
+                    else:
+                        if cell.walls['West']:
+                            print(Walls.LEFT, end='')
+                        elif cell.walls['East']:
+                            print(Walls.RIGHT, end='')
+                        else:
+                            print(Walls.EMPTY, end='')
 
-def getting_widht():
-    with open('../config.txt', 'r') as config_file:
-        for line in config_file:
-            if line.startswith('WIDTH'):
-                return int(line.split('=')[1].strip())
+                if place_in_row == width - 1:
+                    print()
 
+                place_in_row += 1
 
-def indexing_wall():
-    list_walls = []
-    for item in Walls:
-        list_walls.append(item.value)
-    return list_walls
-
-
-def printing_walls(hex_data, list_walls, width):
-    top_parts = []
-    bottom_parts = []
-    eol = 0
-    first_line = True
-    first_run = True
-    for tup in list_walls:
-        top_parts.append(tup[0])
-        bottom_parts.append(tup[1])
-
-    for data in hex_data:
-        if eol % width == 0 and not first_run:
-            first_line = False
-            print()
-        if first_line is True:
-            print(top_parts[int(data, 16) % 16], end='', sep='')
-        else:
-            print(bottom_parts[int(data, 16) % 16], end='', sep='')
-        eol += 1
-        first_run = False
+    for cell in maze.grid[height - 1]:
+        print(Walls.BOTTOM if cell.walls['South'] else Walls.EMPTY, end='')
 
     print()
 
 
-if __name__ == '__main__':
-    hex_data = file_to_data()
-    list_walls = indexing_wall()
-    width = getting_widht()
+def print_maze(maze: Maze, width: int, height: int):
     pattern = [
             '██  ██   ██████ ',
             '██  ██  ██    ██',
@@ -64,4 +45,4 @@ if __name__ == '__main__':
             '    ██   ██     ',
             '    ██  ████████'
             ]
-    printing_walls(hex_data, list_walls, width)
+    printing_walls(maze, width, height)

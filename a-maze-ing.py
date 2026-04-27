@@ -2,6 +2,7 @@ import sys
 from typing import Any
 from maze import Maze as mg
 from input_parser import get_flags
+from display.display import print_maze
 
 
 def main() -> None:
@@ -13,11 +14,10 @@ def main() -> None:
 
     maze: mg = mg(flags['width'], flags['height'], flags['entry'], flags['exit'])
     path = 'SSSSSSSSSSSSSSSSSSSEEEEEEEEEEEEEE'
-    maze.gen_hak()
+    maze.gen_dfs()
     maze.output(flags['output_file'], flags['entry'], flags['exit'], path)
 
-    with open(flags['output_file'], 'r') as output_file:
-        print(output_file.read())
+    print_maze(maze, flags['width'], flags['height'])
 
 
 if __name__ == '__main__':
