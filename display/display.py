@@ -27,10 +27,7 @@ def indexing_wall():
     return list_walls
 
 
-if __name__ == '__main__':
-    hex_data = file_to_data()
-    list_walls = indexing_wall()
-    width = getting_widht()
+def printing_walls(hex_data, list_walls, width):
     top_parts = []
     bottom_parts = []
     eol = 0
@@ -39,14 +36,12 @@ if __name__ == '__main__':
     for tup in list_walls:
         top_parts.append(tup[0])
         bottom_parts.append(tup[1])
-        
-    print(eol % width)
 
     for data in hex_data:
         if eol % width == 0 and not first_run:
             first_line = False
             print()
-        if first_line == True:
+        if first_line is True:
             print(top_parts[int(data, 16) % 16], end='', sep='')
         else:
             print(bottom_parts[int(data, 16) % 16], end='', sep='')
@@ -54,3 +49,19 @@ if __name__ == '__main__':
         first_run = False
 
     print()
+
+
+if __name__ == '__main__':
+    hex_data = file_to_data()
+    list_walls = indexing_wall()
+    width = getting_widht()
+    pattern = [
+            '██  ██   ██████ ',
+            '██  ██  ██    ██',
+            '██  ██       ██ ',
+            '██████     ███  ',
+            '    ██    ██    ',
+            '    ██   ██     ',
+            '    ██  ████████'
+            ]
+    printing_walls(hex_data, list_walls, width)
