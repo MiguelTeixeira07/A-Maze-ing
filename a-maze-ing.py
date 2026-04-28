@@ -2,6 +2,8 @@ import sys
 from typing import Any
 from maze import Maze as mg
 from input_parser import get_flags
+from colorama import init
+
 from display.display import print_maze
 
 
@@ -21,4 +23,6 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+    sys.stdout.reconfigure(encoding='utf-8')
+    init(autoreset=True)
     main()
