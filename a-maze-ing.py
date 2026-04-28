@@ -19,7 +19,7 @@ def main() -> None:
     maze.gen_dfs()
     maze.output(flags['output_file'], flags['entry'], flags['exit'], path)
 
-    print_maze(maze, flags['width'], flags['height'])
+    print_maze(maze, flags['width'], flags['height'], flags['entry'], flags['exit'])
 
 
 if __name__ == '__main__':

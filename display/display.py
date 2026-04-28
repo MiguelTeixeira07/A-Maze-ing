@@ -1,8 +1,9 @@
-from typing import List
-from colorama import Style
+from typing import List, Tuple
+from colorama import Style, Fore, init
 from .walls import Walls
 from .colors import random_color
 from maze import Maze
+import time
 
 
 LOGO_PATTERN: list[str] = [
@@ -53,7 +54,6 @@ def lining_walls(maze: Maze, width: int, height: int) -> List[str]:
     for cell in maze.grid[height - 1]:
         bottom += str(Walls.BOTTOM if cell.walls['South'] else Walls.EMPTY)
     lines.append(bottom)
-
     return lines
     
     
@@ -76,7 +76,7 @@ def coloring_logo(
         if char != ' ':
             # Return to maze color after each logo pixel, otherwise the
             # remaining part of the line prints with terminal default color.
-            maze_row_chars[col_index] = color + char + reset + base_color
+            maze_row_chars[col_index] = color + char + base_color
     return maze_row_chars
 
 
@@ -110,7 +110,24 @@ def overlay(lines: List[str], logo_color: str, grid_color: str) -> list[str]:
     return lines
 
 
-def print_maze(maze: Maze, width: int, height: int):
+def overlay_entry_exit(lines: List[str], color: str, entry: Tuple[int, int], exit: Tuple[int, int]) -> List[str]:
+    entry_x, entry_y = entry
+    exit_x, exit_y = exit
+    new_lines = []
+    
+    for i, line in enumerate(lines):
+        new_line = ""
+        for j, char in enumerate(line):
+            if (i == entry_x and j == entry_y) or (i == exit_x and j == exit_y):
+                # Keep only the marker white, then restore maze color.
+                new_line += Fore.WHITE + char + color
+            else:
+                new_line += char
+        new_lines.append(new_line)
+    return new_lines
+
+
+def print_maze(maze: Maze, width: int, height: int, entry: Tuple[int, int], exit: Tuple[int, int]):
     
     """Calls lining_Walls() and overlay() to make the correct maze and put 
     the 42 pattern in the center, then prints it"""
@@ -120,7 +137,10 @@ def print_maze(maze: Maze, width: int, height: int):
         logo_color = random_color()
     lines = lining_walls(maze, width, height)
     lines = overlay(lines, logo_color, grid_color)
+    lines = overlay_entry_exit(lines, grid_color, entry, exit)
     # Color full maze lines only after all positioning logic is done.
     lines = [grid_color + line + Style.RESET_ALL for line in lines]
     for line in lines:
+        time.sleep(0.03)
         print(line)
+        time.sleep(0.03)
