@@ -8,8 +8,6 @@ class Walls(Enum):
 
     RIGHT = "    █"
 
-    BOTTOM = "█████"
-
     LEFT = "█    "
 
     LEFT_AND_RIGHT = "█   █"

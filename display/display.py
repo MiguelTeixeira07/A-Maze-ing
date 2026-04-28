@@ -7,6 +7,7 @@ def printing_walls(maze: Maze, width: int, height: int) -> None:
         for i in range(2):
             place_in_row = 0
 
+            print('██', end='')
             for cell in row:
                 if i == 0:
                     if cell.walls['North']:
@@ -25,12 +26,14 @@ def printing_walls(maze: Maze, width: int, height: int) -> None:
                             print(Walls.EMPTY, end='')
 
                 if place_in_row == width - 1:
-                    print()
+                    print('██')
 
                 place_in_row += 1
 
-    for cell in maze.grid[height - 1]:
-        print(Walls.BOTTOM if cell.walls['South'] else Walls.EMPTY, end='')
+    print('██', end='')
+    for _ in range(width):
+        print('█████', end='')
+    print('██')
 
     print()
 
