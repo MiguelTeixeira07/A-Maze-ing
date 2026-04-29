@@ -11,22 +11,26 @@ def solve(maze: Maze) -> str:
             return turns
         
         cell.visited = True
-        
+
         if not cell.walls['North'] and not maze.grid[cell.y - 1][cell.x].visited:
             result = flood_fill(maze.grid[cell.y - 1][cell.x], turns + 'N')
-            if result: return result
-        
+            if result:
+                return result
+
         if not cell.walls['East'] and not maze.grid[cell.y][cell.x + 1].visited:
             result = flood_fill(maze.grid[cell.y][cell.x + 1], turns + 'E')
-            if result: return result
-        
+            if result:
+                return result
+
         if not cell.walls['South'] and not maze.grid[cell.y + 1][cell.x].visited:
             result = flood_fill(maze.grid[cell.y + 1][cell.x], turns + 'S')
-            if result: return result
-        
+            if result:
+                return result
+
         if not cell.walls['West'] and not maze.grid[cell.y][cell.x - 1].visited:
             result = flood_fill(maze.grid[cell.y][cell.x - 1], turns + 'W')
-            if result: return result
+            if result:
+                return result
 
         return ''
 

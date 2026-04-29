@@ -146,7 +146,7 @@ class Maze:
                 next_cell = self.grid[y][x - 1]
                 cell.walls['West'] = False
                 next_cell.walls['East'] = False
-        
+
         return next_cell
 
     # Depth-first Search algorithm - perfect maze
@@ -163,6 +163,9 @@ class Maze:
         cells have been visited, therefore the maze has been fully generated,
         with all cells accessible.
         """
+        from display.display import printing_walls
+        import time
+        import os
         # rand.seed(42)
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
@@ -178,8 +181,13 @@ class Maze:
             while not self.directions(cell) and history:
                 cell = history.pop()
 
+            os.system('clear')
+            print(printing_walls(self, self.width, self.height), end='', flush=True)
+            time.sleep(0.01667)
+
             if not history:
                 break
+        print()
 
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
