@@ -11,7 +11,6 @@ class Maze:
         exit (Maze.Cell): Exit of the maze
         grid (list[list[Maze.Cell]]): Matrix with every cell.
     """
-
     class Cell:
         """One maze cell.
 
@@ -22,7 +21,6 @@ class Maze:
             hex (str): Hexadecimal representation of walls.
             visited (bool): Has the cell been visited on creation.
         """
-
         def __init__(self, x: int, y: int, start=False, exit=False) -> None:
             """Initializes a cell.
 
@@ -64,6 +62,30 @@ class Maze:
             st (list[int, int]): x and y coordinates of maze start.
             ext (list[int, int]): x and y coordinates of maze exit.
         """
+        pattern_cells = (
+            [((w - 7) // 2), ((h - 5) // 2)], # left of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2)], # top of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2)], # top of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2)], # top of 2
+
+            [((w - 7) // 2), ((h - 5) // 2) + 1], # left of 4
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 1], # right of 2
+
+            [((w - 7) // 2), ((h - 5) // 2) + 2], # middle of 4
+            [((w - 7) // 2) + 1, ((h - 5) // 2) + 2], # middle of 4
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 2], # middle of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 2], # middle of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2) + 2], # middle of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 2], # middle of 2
+
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 3], # right of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 3], # left of 2
+
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 4], # right of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 4], # bottom of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2) + 4], # bottom of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 4] # bottom of 2
+        )
         self.width: int = w
         self.height: int = h
 
@@ -74,6 +96,10 @@ class Maze:
                 start: bool = (x, y) == st
                 exit: bool = (x, y) == ext
                 self.grid[y].append(Maze.Cell(x, y, start, exit))
+
+                if [x, y] in pattern_cells:
+                    self.grid[y][x].visited = True
+
                 if start:
                     self.start = self.grid[y][x]
                 if exit:
