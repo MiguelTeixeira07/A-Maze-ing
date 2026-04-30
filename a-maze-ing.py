@@ -25,7 +25,7 @@ def main() -> None:
     path = solve(maze)
     maze.output(flags['output_file'], flags['entry'], flags['exit'], path)
 
-    print_maze(maze, flags['width'], flags['height'])
+    print(print_maze(maze, flags['width'], flags['height']))
     print(path)
 
 

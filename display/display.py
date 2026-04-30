@@ -49,4 +49,4 @@ def print_maze(maze: Maze, width: int, height: int):
             '    ██   ██     ',
             '    ██  ████████'
             ]
-    printing_walls(maze, width, height)
+    return printing_walls(maze, width, height)

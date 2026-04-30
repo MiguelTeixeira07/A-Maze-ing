@@ -1,4 +1,6 @@
 import random as rand
+import time
+import os
 
 
 class Maze:
@@ -190,8 +192,6 @@ class Maze:
         with all cells accessible.
         """
         from display.display import printing_walls
-        import time
-        import os
         # rand.seed(42)
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
@@ -217,6 +217,9 @@ class Maze:
 
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
+        from display.display import printing_walls
+
+
         # rand.seed(42)
         self.start.visited = True
         cell = self.start
@@ -227,18 +230,25 @@ class Maze:
                 cell = self.move(cell, direction)
                 cell.visited = True
 
-            while not self.directions(cell):
+            os.system('clear')
+            print(printing_walls(self, self.width, self.height), end='', flush=True)
+            time.sleep(0.01667)
+
+            if not self.directions(cell):
                 found = False
                 for y in range(self.height):
                     for x in range(self.width):
-                        if self.grid[y][x].visited:
-                            cell = self.grid[y][x]
+                        cell = self.grid[y][x]
+                        if (self.grid[y][x].visited and
+                            self.directions(cell) and
+                            any(not wall for wall in cell.walls.values())):
                             found = True
                             break
                     if found:
                         break
 
-                return
+                if not found:
+                    break
 
     # My own algorithm - imperfect maze
     def gen_imperfect(self) -> None:
