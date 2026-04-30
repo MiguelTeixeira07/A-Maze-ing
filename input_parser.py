@@ -24,7 +24,7 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
         'ENTRY': lambda v: (int(v.split(',')[0]), int(v.split(',')[1])),
         'EXIT': lambda v: (int(v.split(',')[0]), int(v.split(',')[1])),
         'OUTPUT_FILE': str,
-        'PERFECT': bool
+        'PERFECT': lambda v: v == 'True'
     }
 
     with open(config_file_path, 'r') as config_file:
@@ -41,6 +41,8 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
 
                 str_value: str = line[len(flag) + 1:]
                 value: Any = action(str_value.strip('\n'))
+                if flag == 'PERFECT' and str_value not in ['True', 'False']:
+                    raise SyntaxError('Invalid syntax')
                 flags.update({flag.lower(): value})
                 break
 

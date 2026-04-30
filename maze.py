@@ -68,7 +68,7 @@ class Maze:
             st (list[int, int]): x and y coordinates of maze start.
             ext (list[int, int]): x and y coordinates of maze exit.
         """
-        pattern_cells = (
+        self.pattern_cells = (
             [((w - 7) // 2), ((h - 5) // 2)], # left of 4
             [((w - 7) // 2) + 4, ((h - 5) // 2)], # top of 2
             [((w - 7) // 2) + 5, ((h - 5) // 2)], # top of 2
@@ -103,7 +103,7 @@ class Maze:
                 exit: bool = (x, y) == ext
                 self.grid[y].append(Maze.Cell(x, y, start, exit))
 
-                if [x, y] in pattern_cells:
+                if [x, y] in self.pattern_cells:
                     self.grid[y][x].visited = True
 
                 if start:
@@ -259,7 +259,48 @@ class Maze:
 
     # My own algorithm - imperfect maze
     def gen_imperfect(self) -> None:
-        pass
+        from display.display import print_maze
+
+
+        self.gen_dfs()
+
+        pattern = self.pattern_cells
+
+        for y in range(self.height):
+            for x in range(self.width):
+                cell = self.grid[y][x]
+
+                if cell.walls['North'] and cell.walls['South']:
+                    if cell.walls['East'] and not cell.walls['West']:
+                        if x != self.width - 1 and [x + 1, y] not in pattern:
+                            cell = self.move(cell, 'East')
+                            os.system('clear')
+                            print(print_maze(self), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
+                    if cell.walls['West'] and not cell.walls['East']:
+                        if x != 0 and [x - 1, y] not in pattern:
+                            cell = self.move(cell, 'West')
+                            os.system('clear')
+                            print(print_maze(self), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
+
+                if cell.walls['East'] and cell.walls['West']:
+                    if cell.walls['North'] and not cell.walls['South']:
+                        if y != 0 and [x, y - 1] not in pattern:
+                            cell = self.move(cell, 'North')
+                            os.system('clear')
+                            print(print_maze(self), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
+                    if cell.walls['South'] and not cell.walls['North']:
+                        if y != self.height - 1 and [x, y + 1] not in pattern:
+                            cell = self.move(cell, 'South')
+                            os.system('clear')
+                            print(print_maze(self), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
 
     def to_hex_string(self) -> str:
         rows = []

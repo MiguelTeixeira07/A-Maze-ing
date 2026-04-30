@@ -1,5 +1,6 @@
 import sys
 import os
+import random as rand
 from typing import Any
 from maze import Maze
 from input_parser import get_flags, verify_flags
@@ -30,7 +31,11 @@ def main() -> None:
         flags['exit']
     )
 
-    maze.gen_dfs()
+    if flags['perfect']:
+        algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
+        algorithm()
+    else:
+        maze.gen_imperfect()
     path = solve(maze)
     maze.output(flags['output_file'], flags['entry'], flags['exit'], path)
 
