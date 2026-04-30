@@ -12,6 +12,7 @@ class Maze:
         start (Maze.Cell): Start of the maze
         exit (Maze.Cell): Exit of the maze
         grid (list[list[Maze.Cell]]): Matrix with every cell.
+        solve_visited (bool): 
     """
     class Cell:
         """One maze cell.
@@ -22,6 +23,7 @@ class Maze:
             walls (dict[str, bool]): Cell walls.
             hex (str): Hexadecimal representation of walls.
             visited (bool): Has the cell been visited on creation.
+            sv (bool): Has this cell been visited while solving
         """
         def __init__(self, x: int, y: int, start=False, exit=False) -> None:
             """Initializes a cell.
@@ -51,6 +53,8 @@ class Maze:
             self.hex: str = 'F'
 
             self.visited: bool = False
+
+            self.sv: bool = False
 
     def __init__(self, w: int, h: int, st: list[int], ext: list[int]) -> None:
         """Initializes the maze.
@@ -191,7 +195,7 @@ class Maze:
         cells have been visited, therefore the maze has been fully generated,
         with all cells accessible.
         """
-        from display.display import printing_walls
+        from display.display import print_maze
         # rand.seed(42)
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
@@ -208,16 +212,19 @@ class Maze:
                 cell = history.pop()
 
             os.system('clear')
-            print(printing_walls(self, self.width, self.height), end='', flush=True)
+            print(print_maze(self), end='', flush=True)
             time.sleep(0.01667)
 
             if not history:
                 break
-        print()
+
+        # This is only here to make sure the 2 is not closed off
+        self.gen_hak()
+
 
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
-        from display.display import printing_walls
+        from display.display import print_maze
 
 
         # rand.seed(42)
@@ -231,7 +238,7 @@ class Maze:
                 cell.visited = True
 
             os.system('clear')
-            print(printing_walls(self, self.width, self.height), end='', flush=True)
+            print(print_maze(self), end='', flush=True)
             time.sleep(0.01667)
 
             if not self.directions(cell):
