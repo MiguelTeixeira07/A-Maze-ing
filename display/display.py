@@ -79,10 +79,8 @@ def printing_walls(
     return output
 
 
-def print_maze(maze: Maze, solution, grid_color, logo_color):
+def print_maze(maze: Maze, solution, grid_color, logo_color, entry_color, exit_color):
     width = maze.width  # O width era parametro mas como o maze ja tem width eu tirei
-    entry_color = random_color(grid_color, logo_color)
-    exit_color = random_color(grid_color, logo_color, entry_color)
     path_color = random_color(grid_color, logo_color, entry_color, exit_color)
 
     output = printing_walls(
