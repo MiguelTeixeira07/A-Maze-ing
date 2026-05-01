@@ -4,7 +4,16 @@ from colorama import Fore, init
 from .colors import random_color
 
 
-def printing_walls(maze: Maze, width: int, gcolor: str, logo_color: str) -> str:
+def printing_walls(
+        maze: Maze,
+        width: int,
+        solution: list[Maze.Cell],
+        gcolor: str,
+        logo_color: str,
+        entry_color: str,
+        exit_color: str,
+        path_color: str) -> str:
+
     output = ''
     for row in maze.grid:
         for i in range(2):
@@ -22,14 +31,26 @@ def printing_walls(maze: Maze, width: int, gcolor: str, logo_color: str) -> str:
                         output += '█' + logo_color + '███' + gcolor + '█'
                     else:
                         if cell.walls['East'] and cell.walls['West']:
-                            output += gcolor + str(Walls.LEFT_AND_RIGHT)
+                            if cell in solution:
+                                output += '█' + path_color + '███' + gcolor + '█'
+                            else:
+                                output += gcolor + str(Walls.LEFT_AND_RIGHT)
                         else:
                             if cell.walls['West']:
-                                output += gcolor + str(Walls.LEFT)
+                                if cell in solution:
+                                    output += '█' + path_color + '███ '
+                                else:
+                                    output += gcolor + str(Walls.LEFT)
                             elif cell.walls['East']:
-                                output += gcolor + str(Walls.RIGHT)
+                                if cell in solution:
+                                    output += path_color + ' ███' + gcolor + '█'
+                                else:
+                                    output += gcolor + str(Walls.RIGHT)
                             else:
-                                output += gcolor + str(Walls.EMPTY)
+                                if cell in solution:
+                                    output += path_color + ' ███ '
+                                else:
+                                    output += gcolor + str(Walls.EMPTY)
 
                 if place_in_row == width - 1:
                     output += '██\n'
@@ -44,9 +65,22 @@ def printing_walls(maze: Maze, width: int, gcolor: str, logo_color: str) -> str:
     return output
 
 
-def print_maze(maze: Maze):
+def print_maze(maze: Maze, solution):
     width = maze.width  # O width era parametro mas como o maze ja tem width eu tirei
     grid_color = random_color()  # random_color agora leva como argumentos as cores que nao queres que sejam escolhidas
     logo_color = random_color(grid_color)
-    output = printing_walls(maze, width, grid_color, logo_color)
+    entry_color = random_color(grid_color, logo_color)
+    exit_color = random_color(grid_color, logo_color, entry_color)
+    path_color = random_color(grid_color, logo_color, entry_color, exit_color)
+
+    output = printing_walls(
+        maze,
+        width,
+        solution,
+        grid_color,
+        logo_color,
+        entry_color,
+        exit_color,
+        path_color
+    )
     return output

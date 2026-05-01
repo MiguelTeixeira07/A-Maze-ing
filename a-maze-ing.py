@@ -37,11 +37,11 @@ def main() -> None:
     else:
         maze.gen_imperfect()
     path = solve(maze)
-    maze.output(flags['output_file'], flags['entry'], flags['exit'], path)
+    maze.output(flags['output_file'], flags['entry'], flags['exit'], path[1])
 
     os.system('clear')
-    print(print_maze(maze), flush=True)
-    print(path)
+    print(print_maze(maze, path[0][1:]), flush=True)
+    print(path[1])
 
 
 if __name__ == '__main__':
