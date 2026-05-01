@@ -21,6 +21,20 @@ def printing_walls(
 
             output += gcolor + '██'
             for cell in row:
+
+                if i == 1 and (cell.start or cell.exit):
+                    if cell.start:
+                        point_color = entry_color
+                    else:
+                        point_color = exit_color
+                    left_wall = '█' if cell.walls['West'] else ' '
+                    right_wall = '█' if cell.walls['East'] else ' '
+                    output += gcolor + left_wall + point_color + '███' + gcolor + right_wall
+                    place_in_row += 1
+                    if place_in_row == width - 1:
+                        output += '██\n'
+                    continue
+                
                 if i == 0:
                     if cell.walls['North']:
                         output += gcolor + str(Walls.TOP)
