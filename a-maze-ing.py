@@ -7,9 +7,12 @@ from input_parser import get_flags, verify_flags
 from colorama import init
 from solution import solve
 from display.display import print_maze
+from display.colors import random_color
 
 
 def main() -> None:
+    grid_color = random_color()
+    logo_color = random_color(grid_color)
     if len(sys.argv) != 2:
         print('Invalid arguments!')
         print('Usage: "python3 a-maze-ing.py <config_file>"')
@@ -40,7 +43,7 @@ def main() -> None:
     maze.output(flags['output_file'], flags['entry'], flags['exit'], path[1])
 
     os.system('clear')
-    print(print_maze(maze, path[0][1:]), flush=True)
+    print(print_maze(maze, path[0][1:], grid_color, logo_color), flush=True)
     print(path[1])
 
 

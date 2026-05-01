@@ -1,6 +1,11 @@
 import random as rand
+from display.colors import random_color
 import time
 import os
+
+
+grid_color = random_color()
+logo_color = random_color(grid_color)
 
 
 class Maze:
@@ -212,7 +217,7 @@ class Maze:
                 cell = history.pop()
 
             os.system('clear')
-            print(print_maze(self, []), end='', flush=True)
+            print(print_maze(self, [], grid_color, logo_color), end='', flush=True)
             time.sleep(0.01667)
 
             if not history:
@@ -238,7 +243,7 @@ class Maze:
                 cell.visited = True
 
             os.system('clear')
-            print(print_maze(self, []), end='', flush=True)
+            print(print_maze(self, [], grid_color, logo_color), end='', flush=True)
             time.sleep(0.01667)
 
             if not self.directions(cell):
@@ -275,14 +280,14 @@ class Maze:
                         if x != self.width - 1 and [x + 1, y] not in pattern:
                             cell = self.move(cell, 'East')
                             os.system('clear')
-                            print(print_maze(self, []), end='', flush=True)
+                            print(print_maze(self, [], grid_color, logo_color), end='', flush=True)
                             time.sleep(0.01667)
                         continue
                     if cell.walls['West'] and not cell.walls['East']:
                         if x != 0 and [x - 1, y] not in pattern:
                             cell = self.move(cell, 'West')
                             os.system('clear')
-                            print(print_maze(self, []), end='', flush=True)
+                            print(print_maze(self, [], grid_color, logo_color), end='', flush=True)
                             time.sleep(0.01667)
                         continue
 
@@ -291,14 +296,14 @@ class Maze:
                         if y != 0 and [x, y - 1] not in pattern:
                             cell = self.move(cell, 'North')
                             os.system('clear')
-                            print(print_maze(self, []), end='', flush=True)
+                            print(print_maze(self, [], grid_color, logo_color), end='', flush=True)
                             time.sleep(0.01667)
                         continue
                     if cell.walls['South'] and not cell.walls['North']:
                         if y != self.height - 1 and [x, y + 1] not in pattern:
                             cell = self.move(cell, 'South')
                             os.system('clear')
-                            print(print_maze(self, []), end='', flush=True)
+                            print(print_maze(self, [], grid_color, logo_color), end='', flush=True)
                             time.sleep(0.01667)
                         continue
 

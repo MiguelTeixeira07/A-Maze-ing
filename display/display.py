@@ -79,10 +79,8 @@ def printing_walls(
     return output
 
 
-def print_maze(maze: Maze, solution):
+def print_maze(maze: Maze, solution, grid_color, logo_color):
     width = maze.width  # O width era parametro mas como o maze ja tem width eu tirei
-    grid_color = random_color()  # random_color agora leva como argumentos as cores que nao queres que sejam escolhidas
-    logo_color = random_color(grid_color)
     entry_color = random_color(grid_color, logo_color)
     exit_color = random_color(grid_color, logo_color, entry_color)
     path_color = random_color(grid_color, logo_color, entry_color, exit_color)
