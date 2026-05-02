@@ -52,6 +52,7 @@ def main() -> None:
 
     # Sorry Miggs, mas eu nao soube fazer isso sem dar tudo append na main :,(
     print('=== A-maze-ing ===')
+    i = 0
     while True:
         try:
             choice = int(input('1. Regenerate a new maze\n'
@@ -66,7 +67,12 @@ def main() -> None:
                 if choice == 1:
                     main()
                 if choice == 2:
-                    pass
+                    os.system('clear')
+                    if i % 2 == 0:
+                        print(print_maze(maze, [], grid_color, logo_color, entry_color, exit_color), flush=True)
+                    else:
+                        print(print_maze(maze, path[0][1:], grid_color, logo_color, entry_color, exit_color), flush=True)
+                    i += 1
                 if choice == 3:
                     os.system('clear')
                     new_grid_color = random_color(grid_color, logo_color, entry_color, exit_color)
