@@ -62,7 +62,7 @@ def verify_flags(flags: dict[str, Any]) -> bool:
         return False
     if flags['exit'][0] < 0 or flags['exit'][1] < 0:
         return False
-    
+
     if flags['entry'][0] >= flags['width']:
         return False
     if flags['entry'][1] >= flags['height']:

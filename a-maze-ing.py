@@ -46,9 +46,8 @@ def main() -> None:
     path = solve(maze)
     maze.output(flags['output_file'], flags['entry'], flags['exit'], path[1])
 
-    os.system('clear')
+    os.system('cls')
     print(print_maze(maze, path[0][1:], grid_color, logo_color, entry_color, exit_color), flush=True)
-    print(path[1])
 
     # Sorry Miggs, mas eu nao soube fazer isso sem dar tudo append na main :,(
     print('=== A-maze-ing ===')
@@ -58,7 +57,7 @@ def main() -> None:
             choice = int(input('1. Regenerate a new maze\n'
                     '2. Show/Hide path from entry to exit\n'
                     '3. Rotate maze colors\n'
-                    '4. Quit\n'))
+                    '4. Quit\n\n'))
             if 0 > choice or choice > 4:
                 print(f'\n\n{Fore.RED} ERROR')
                 print('Please select a integer value between 1 and 4\n\n')
