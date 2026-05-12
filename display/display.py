@@ -18,6 +18,11 @@ def printing_walls(
         path_color: str) -> str:
 
     output = ''
+    east_west = lambda c: '█' + c + '███' + gcolor + '█'
+    west = lambda c: '█' + c + '███ '
+    east = lambda c: c + ' ███' + gcolor + '█'
+    none = lambda c: c + ' ███ '
+
     for row in maze.grid:
         for i in range(2):
             place_in_row = 0
@@ -25,48 +30,51 @@ def printing_walls(
 
             output += gcolor + '██'
             for cell in row:
-
-                if i == 1 and (cell.start or cell.exit):
-                    if cell.start:
-                        point_color = entry_color
-                    else:
-                        point_color = exit_color
-                    left_wall = '█' if cell.walls['West'] else ' '
-                    right_wall = '█' if cell.walls['East'] else ' '
-                    output += gcolor + left_wall + point_color + '███' + gcolor + right_wall
-                    place_in_row += 1
-                    if place_in_row == width - 1:
-                        output += '██\n'
-                    continue
-                
                 if i == 0:
                     if cell.walls['North']:
                         output += gcolor + str(Walls.TOP)
                     else:
                         output += gcolor + str(Walls.LEFT_AND_RIGHT)
                 else:
-                    if all(wall for wall in cell.walls.values()) and cell.visited:
-                        output += '█' + logo_color + '███' + gcolor + '█'
+                    if all(w for w in cell.walls.values()) and cell.visited:
+                        output += east_west(logo_color)
                     else:
                         if cell.walls['East'] and cell.walls['West']:
-                            if cell in solution:
-                                output += '█' + path_color + '███' + gcolor + '█'
+                            if cell.start:
+                                output += east_west(entry_color)
+                            elif cell.exit:
+                                output += east_west(exit_color)
+                            elif cell in solution:
+                                output += east_west(path_color)
                             else:
                                 output += gcolor + str(Walls.LEFT_AND_RIGHT)
                         else:
                             if cell.walls['West']:
-                                if cell in solution:
-                                    output += '█' + path_color + '███ '
+                                if cell.start:
+                                    output += west(entry_color)
+                                elif cell.exit:
+                                    output += west(exit_color)
+                                elif cell in solution:
+                                    output += west(path_color)
                                 else:
                                     output += gcolor + str(Walls.LEFT)
+
                             elif cell.walls['East']:
-                                if cell in solution:
-                                    output += path_color + ' ███' + gcolor + '█'
+                                if cell.start:
+                                    output += east(entry_color)
+                                elif cell.exit:
+                                    output += east(exit_color)
+                                elif cell in solution:
+                                    output += east(path_color)
                                 else:
                                     output += gcolor + str(Walls.RIGHT)
                             else:
-                                if cell in solution:
-                                    output += path_color + ' ███ '
+                                if cell.start:
+                                    output += none(entry_color)
+                                elif cell.exit:
+                                    output += none(exit_color)
+                                elif cell in solution:
+                                    output += none(path_color)
                                 else:
                                     output += gcolor + str(Walls.EMPTY)
 
@@ -83,11 +91,18 @@ def printing_walls(
     return output
 
 
-def print_maze(maze: Maze, solution, grid_color, logo_color, entry_color, exit_color):
-    width = maze.width  # O width era parametro mas como o maze ja tem width eu tirei
-    path_color = random_color(grid_color, logo_color, entry_color, exit_color)
+def print_maze(
+        maze: Maze,
+        solution: list[Maze.Cell],
+        grid_color: str,
+        logo_color: str,
+        entry_color: str,
+        exit_color: str,
+        path_color: str) -> str:
 
-    output = printing_walls(
+    width: int = maze.width
+
+    return printing_walls(
         maze,
         width,
         solution,
@@ -97,4 +112,3 @@ def print_maze(maze: Maze, solution, grid_color, logo_color, entry_color, exit_c
         exit_color,
         path_color
     )
-    return output

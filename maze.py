@@ -3,11 +3,13 @@ from display.colors import random_color
 import time
 import os
 
-
 grid_color = random_color()
 logo_color = random_color(grid_color)
 entry_color = random_color(grid_color, logo_color)
 exit_color = random_color(grid_color, logo_color, entry_color)
+path_collor = random_color(grid_color, logo_color, entry_color, exit_color)
+
+colors = grid_color, logo_color, entry_color, exit_color, path_collor
 
 
 class Maze:
@@ -218,8 +220,12 @@ class Maze:
             while not self.directions(cell) and history:
                 cell = history.pop()
 
-            os.system('cls')
-            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+            os.system('clear')
+            print(
+                print_maze(self, [], *colors),
+                end='',
+                flush=True
+            )
             time.sleep(0.01667)
 
             if not history:
@@ -244,8 +250,12 @@ class Maze:
                 cell = self.move(cell, direction)
                 cell.visited = True
 
-            os.system('cls')
-            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+            os.system('clear')
+            print(
+                print_maze(self, [], *colors),
+                end='',
+                flush=True
+            )
             time.sleep(0.01667)
 
             if not self.directions(cell):
@@ -281,15 +291,23 @@ class Maze:
                     if cell.walls['East'] and not cell.walls['West']:
                         if x != self.width - 1 and [x + 1, y] not in pattern:
                             cell = self.move(cell, 'East')
-                            os.system('cls')
-                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            os.system('clear')
+                            print(
+                                print_maze(self, [], *colors),
+                                end='',
+                                flush=True
+                            )
                             time.sleep(0.01667)
                         continue
                     if cell.walls['West'] and not cell.walls['East']:
                         if x != 0 and [x - 1, y] not in pattern:
                             cell = self.move(cell, 'West')
-                            os.system('cls')
-                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            os.system('clear')
+                            print(
+                                print_maze(self, [], *colors),
+                                end='',
+                                flush=True
+                            )
                             time.sleep(0.01667)
                         continue
 
@@ -297,15 +315,23 @@ class Maze:
                     if cell.walls['North'] and not cell.walls['South']:
                         if y != 0 and [x, y - 1] not in pattern:
                             cell = self.move(cell, 'North')
-                            os.system('cls')
-                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            os.system('clear')
+                            print(
+                                print_maze(self, [], *colors),
+                                end='',
+                                flush=True
+                            )
                             time.sleep(0.01667)
                         continue
                     if cell.walls['South'] and not cell.walls['North']:
                         if y != self.height - 1 and [x, y + 1] not in pattern:
                             cell = self.move(cell, 'South')
-                            os.system('cls')
-                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            os.system('clear')
+                            print(
+                                print_maze(self, [], *colors),
+                                end='',
+                                flush=True
+                            )
                             time.sleep(0.01667)
                         continue
 
