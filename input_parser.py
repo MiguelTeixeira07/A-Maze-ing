@@ -24,7 +24,7 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
         'ENTRY': lambda v: (int(v.split(',')[0]), int(v.split(',')[1])),
         'EXIT': lambda v: (int(v.split(',')[0]), int(v.split(',')[1])),
         'OUTPUT_FILE': str,
-        'PERFECT': bool
+        'PERFECT': lambda v: v == 'True'
     }
 
     with open(config_file_path, 'r') as config_file:
@@ -41,7 +41,39 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
 
                 str_value: str = line[len(flag) + 1:]
                 value: Any = action(str_value.strip('\n'))
+                if flag == 'PERFECT' and str_value not in ['True', 'False']:
+                    raise SyntaxError('Invalid syntax')
                 flags.update({flag.lower(): value})
                 break
 
     return flags
+
+
+def verify_flags(flags: dict[str, Any]) -> bool:
+    if flags['width'] < 1 or flags['height'] < 1:
+        return False
+
+    if flags['width'] > 40 or flags['width'] < 9:
+        return False
+    if flags['height'] > 40 or flags['height'] < 7:
+        return False
+
+    if flags['entry'][0] < 0 or flags['entry'][1] < 0:
+        return False
+    if flags['exit'][0] < 0 or flags['exit'][1] < 0:
+        return False
+
+    if flags['entry'][0] >= flags['width']:
+        return False
+    if flags['entry'][1] >= flags['height']:
+        return False
+
+    if flags['exit'][0] >= flags['width']:
+        return False
+    if flags['exit'][1] >= flags['height']:
+        return False
+
+    if flags['output_file'][len(flags['output_file']) - 4:] != '.txt':
+        return False
+
+    return True

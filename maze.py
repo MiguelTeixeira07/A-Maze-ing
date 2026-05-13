@@ -1,4 +1,13 @@
 import random as rand
+from display.colors import random_color
+import time
+import os
+
+
+grid_color = random_color()
+logo_color = random_color(grid_color)
+entry_color = random_color(grid_color, logo_color)
+exit_color = random_color(grid_color, logo_color, entry_color)
 
 
 class Maze:
@@ -10,8 +19,8 @@ class Maze:
         start (Maze.Cell): Start of the maze
         exit (Maze.Cell): Exit of the maze
         grid (list[list[Maze.Cell]]): Matrix with every cell.
+        solve_visited (bool): 
     """
-
     class Cell:
         """One maze cell.
 
@@ -21,8 +30,8 @@ class Maze:
             walls (dict[str, bool]): Cell walls.
             hex (str): Hexadecimal representation of walls.
             visited (bool): Has the cell been visited on creation.
+            sv (bool): Has this cell been visited while solving
         """
-
         def __init__(self, x: int, y: int, start=False, exit=False) -> None:
             """Initializes a cell.
 
@@ -52,6 +61,8 @@ class Maze:
 
             self.visited: bool = False
 
+            self.sv: bool = False
+
     def __init__(self, w: int, h: int, st: list[int], ext: list[int]) -> None:
         """Initializes the maze.
 
@@ -64,6 +75,30 @@ class Maze:
             st (list[int, int]): x and y coordinates of maze start.
             ext (list[int, int]): x and y coordinates of maze exit.
         """
+        self.pattern_cells = (
+            [((w - 7) // 2), ((h - 5) // 2)], # left of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2)], # top of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2)], # top of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2)], # top of 2
+
+            [((w - 7) // 2), ((h - 5) // 2) + 1], # left of 4
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 1], # right of 2
+
+            [((w - 7) // 2), ((h - 5) // 2) + 2], # middle of 4
+            [((w - 7) // 2) + 1, ((h - 5) // 2) + 2], # middle of 4
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 2], # middle of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 2], # middle of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2) + 2], # middle of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 2], # middle of 2
+
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 3], # right of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 3], # left of 2
+
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 4], # right of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 4], # bottom of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2) + 4], # bottom of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 4] # bottom of 2
+        )
         self.width: int = w
         self.height: int = h
 
@@ -74,6 +109,10 @@ class Maze:
                 start: bool = (x, y) == st
                 exit: bool = (x, y) == ext
                 self.grid[y].append(Maze.Cell(x, y, start, exit))
+
+                if [x, y] in self.pattern_cells:
+                    self.grid[y][x].visited = True
+
                 if start:
                     self.start = self.grid[y][x]
                 if exit:
@@ -146,7 +185,7 @@ class Maze:
                 next_cell = self.grid[y][x - 1]
                 cell.walls['West'] = False
                 next_cell.walls['East'] = False
-        
+
         return next_cell
 
     # Depth-first Search algorithm - perfect maze
@@ -163,6 +202,7 @@ class Maze:
         cells have been visited, therefore the maze has been fully generated,
         with all cells accessible.
         """
+        from display.display import print_maze
         # rand.seed(42)
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
@@ -178,11 +218,22 @@ class Maze:
             while not self.directions(cell) and history:
                 cell = history.pop()
 
+            os.system('cls')
+            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+            time.sleep(0.01667)
+
             if not history:
                 break
 
+        # This is only here to make sure the 2 is not closed off
+        self.gen_hak()
+
+
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
+        from display.display import print_maze
+
+
         # rand.seed(42)
         self.start.visited = True
         cell = self.start
@@ -193,22 +244,70 @@ class Maze:
                 cell = self.move(cell, direction)
                 cell.visited = True
 
-            while not self.directions(cell):
+            os.system('cls')
+            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+            time.sleep(0.01667)
+
+            if not self.directions(cell):
                 found = False
                 for y in range(self.height):
                     for x in range(self.width):
-                        if self.grid[y][x].visited:
-                            cell = self.grid[y][x]
+                        cell = self.grid[y][x]
+                        if (self.grid[y][x].visited and
+                            self.directions(cell) and
+                            any(not wall for wall in cell.walls.values())):
                             found = True
                             break
                     if found:
                         break
 
-                return
+                if not found:
+                    break
 
     # My own algorithm - imperfect maze
     def gen_imperfect(self) -> None:
-        pass
+        from display.display import print_maze
+
+
+        self.gen_dfs()
+
+        pattern = self.pattern_cells
+
+        for y in range(self.height):
+            for x in range(self.width):
+                cell = self.grid[y][x]
+
+                if cell.walls['North'] and cell.walls['South']:
+                    if cell.walls['East'] and not cell.walls['West']:
+                        if x != self.width - 1 and [x + 1, y] not in pattern:
+                            cell = self.move(cell, 'East')
+                            os.system('cls')
+                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
+                    if cell.walls['West'] and not cell.walls['East']:
+                        if x != 0 and [x - 1, y] not in pattern:
+                            cell = self.move(cell, 'West')
+                            os.system('cls')
+                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
+
+                if cell.walls['East'] and cell.walls['West']:
+                    if cell.walls['North'] and not cell.walls['South']:
+                        if y != 0 and [x, y - 1] not in pattern:
+                            cell = self.move(cell, 'North')
+                            os.system('cls')
+                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
+                    if cell.walls['South'] and not cell.walls['North']:
+                        if y != self.height - 1 and [x, y + 1] not in pattern:
+                            cell = self.move(cell, 'South')
+                            os.system('cls')
+                            print(print_maze(self, [], grid_color, logo_color, entry_color, exit_color), end='', flush=True)
+                            time.sleep(0.01667)
+                        continue
 
     def to_hex_string(self) -> str:
         rows = []
