@@ -7,12 +7,11 @@ COLORS = [
     Fore.BLUE,
     Fore.CYAN,
     Fore.GREEN,
-    Fore.BLACK,
     Fore.YELLOW,
     Fore.MAGENTA
 ]
 
-def random_color(*exclude: str) -> str:
+def random_color(*exclude: str | None) -> str:
 
     filtered_colors = [color for color in COLORS if color not in exclude]
     return choice(filtered_colors)

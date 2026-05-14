@@ -204,11 +204,12 @@ class Maze:
         cells have been visited, therefore the maze has been fully generated,
         with all cells accessible.
         """
-        from display.display import print_maze
+        from display.display import Display
         # rand.seed(42)
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
         cell = self.start
+        display = Display()
 
         while True:
             if self.directions(cell):
@@ -222,11 +223,11 @@ class Maze:
 
             os.system('clear')
             print(
-                print_maze(self, [], *colors),
+                display.print_maze(self, []),
                 end='',
                 flush=True
             )
-            time.sleep(0.01667)
+            time.sleep(0.005)
 
             if not history:
                 break
@@ -237,12 +238,13 @@ class Maze:
 
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
-        from display.display import print_maze
+        from display.display import Display
 
 
         # rand.seed(42)
         self.start.visited = True
         cell = self.start
+        display = Display()
 
         while True:
             if self.directions(cell):
@@ -252,11 +254,11 @@ class Maze:
 
             os.system('clear')
             print(
-                print_maze(self, [], *colors),
+                display.print_maze(self, []),
                 end='',
                 flush=True
             )
-            time.sleep(0.01667)
+            time.sleep(0.005)
 
             if not self.directions(cell):
                 found = False
@@ -276,12 +278,13 @@ class Maze:
 
     # My own algorithm - imperfect maze
     def gen_imperfect(self) -> None:
-        from display.display import print_maze
+        from display.display import Display
 
 
         self.gen_dfs()
 
         pattern = self.pattern_cells
+        display = Display()
 
         for y in range(self.height):
             for x in range(self.width):
@@ -293,22 +296,22 @@ class Maze:
                             cell = self.move(cell, 'East')
                             os.system('clear')
                             print(
-                                print_maze(self, [], *colors),
+                                display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
-                            time.sleep(0.01667)
+                            time.sleep(0.005)
                         continue
                     if cell.walls['West'] and not cell.walls['East']:
                         if x != 0 and [x - 1, y] not in pattern:
                             cell = self.move(cell, 'West')
                             os.system('clear')
                             print(
-                                print_maze(self, [], *colors),
+                                display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
-                            time.sleep(0.01667)
+                            time.sleep(0.005)
                         continue
 
                 if cell.walls['East'] and cell.walls['West']:
@@ -317,22 +320,22 @@ class Maze:
                             cell = self.move(cell, 'North')
                             os.system('clear')
                             print(
-                                print_maze(self, [], *colors),
+                                display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
-                            time.sleep(0.01667)
+                            time.sleep(0.005)
                         continue
                     if cell.walls['South'] and not cell.walls['North']:
                         if y != self.height - 1 and [x, y + 1] not in pattern:
                             cell = self.move(cell, 'South')
                             os.system('clear')
                             print(
-                                print_maze(self, [], *colors),
+                                display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
-                            time.sleep(0.01667)
+                            time.sleep(0.005)
                         continue
 
     def to_hex_string(self) -> str:
