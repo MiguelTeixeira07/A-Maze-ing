@@ -11,9 +11,6 @@ from display.colors import random_color
 
 
 grid_color = random_color()
-logo_color = random_color(grid_color)
-entry_color = random_color(grid_color, logo_color)
-exit_color = random_color(grid_color, logo_color, entry_color)
 
 
 def main() -> None:
@@ -56,9 +53,9 @@ def main() -> None:
     while True:
         try:
             choice = int(input('1. Regenerate a new maze\n'
-                    '2. Show/Hide path from entry to exit\n'
-                    '3. Rotate maze colors\n'
-                    '4. Quit\n\n'))
+                               '2. Show/Hide path from entry to exit\n'
+                               '3. Rotate maze colors\n'
+                               '4. Quit\n\n'))
             if 0 > choice or choice > 4:
                 print(f'\n\n{Fore.RED} ERROR')
                 print('Please select a integer value between 1 and 4\n\n')
