@@ -45,7 +45,7 @@ def main_loop(
         printing_path: bool) -> bool:
 
     print(
-        '=== A-maze-ing ===\n',
+        '\n=== A-maze-ing ===\n',
         '1. Regenerate a new maze',
         '2. Show/Hide path from entry to exit',
         '3. Rotate maze colors',
@@ -160,3 +160,117 @@ if __name__ == '__main__':
     sys.stdout.reconfigure(encoding='utf-8')
     init(autoreset=True)
     main()
+
+
+
+
+# Se vc gostou, copia o codigo daqui pra baixo:
+
+# import sys
+# import os
+# import random as rand
+# from typing import Any
+# from colorama import init, Fore
+# from maze import Maze
+# from input_parser import get_flags, verify_flags
+# from solution import solve
+# from display.display import Display
+# from display.colors import random_color
+
+
+# grid_color = random_color()
+
+
+# def main_loop(
+#         flags: dict[str, Any],
+#         maze: Maze,
+#         path: tuple[list[Maze.Cell], str],
+#         show_hide: bool) -> bool:
+
+#     print(
+#         '\n=== A-maze-ing ===\n',
+#         '1. Regenerate a new maze',
+#         '2. Show/Hide path from entry to exit',
+#         '3. Rotate maze colors',
+#         '4. Quit\n\n', sep='\n'
+#     )
+#     choice = int(input())
+#     display = Display()
+#     match choice:
+#         case 1:
+#             if flags['perfect']:
+#                 algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
+#                 algorithm()
+#             else:
+#                 maze.gen_imperfect()
+
+#             path = solve(maze)
+#             maze.output(
+#                 flags['output_file'],
+#                 flags['entry'],
+#                 flags['exit'],
+#                 path[1]
+#             )
+
+#         case 2:
+#             os.system('clear')
+#             if show_hide:
+#                 print(display.print_maze(maze, []), flush=True)
+#                 show_hide = False
+#             else:
+#                 print(display.print_maze(maze, path[0][1:]), flush=True)
+#                 show_hide = True
+
+#         case 3:
+#             os.system('clear')
+#             display.set_colors(grid_color)
+#             print(display.print_maze(maze, path[0][1:]), flush=True)
+
+#         case 4:
+#             quit()
+
+#         case _:
+#             print(f'\n\n{Fore.RED} ERROR')
+#             print('Please select a integer value between 1 and 4\n\n')
+
+#     return show_hide
+
+
+# def main() -> None:
+#     if len(sys.argv) != 2:
+#         print('Invalid arguments!')
+#         print('Usage: "python3 a-maze-ing.py <config_file>"')
+#         return
+#     init(autoreset=True)
+#     try:
+#         flags: dict[str, Any] = get_flags(sys.argv[1])
+#     except Exception:
+#         print(f'Invalid syntax on {sys.argv[1]}')
+#         return
+#     if not verify_flags(flags):
+#         print(f'Invalid syntax on {sys.argv[1]}')
+#         return
+
+#     maze: Maze = Maze(
+#         flags['width'],
+#         flags['height'],
+#         flags['entry'],
+#         flags['exit']
+#     )
+
+#     if flags['perfect']:
+#         algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
+#         algorithm()
+#     else:
+#         maze.gen_imperfect()
+#     path = solve(maze)
+#     maze.output(flags['output_file'], flags['entry'], flags['exit'], path[1])
+#     display = Display()
+
+#     os.system('cls')
+#     print(display.print_maze(maze, path[0][1:]), flush=True)
+    
+#     show_hide = True
+#     while True:
+#         show_hide = main_loop(flags, maze, path, show_hide)
+
