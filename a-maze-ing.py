@@ -6,11 +6,35 @@ from colorama import init, Fore
 from maze import Maze
 from input_parser import get_flags, verify_flags
 from solution import solve
-from display.display import Display
+from display.display import print_maze
 from display.colors import random_color
 
 
-grid_color = random_color()
+def init_colors() -> dict[str, str]:
+    colors = {}
+
+    # Ugly code bc of fckass flake8
+    colors['grid_color'] = random_color()
+    colors['logo_color'] = random_color(colors['grid_color'])
+    colors['entry_color'] = random_color(
+        colors['grid_color'],
+        colors['logo_color']
+    )
+
+    colors['exit_color'] = random_color(
+        colors['grid_color'],
+        colors['logo_color'],
+        colors['entry_color']
+    )
+
+    colors['path_color'] = random_color(
+        colors['grid_color'],
+        colors['logo_color'],
+        colors['entry_color'],
+        colors['exit_color']
+    )
+
+    return colors
 
 
 def main_loop(
@@ -79,20 +103,26 @@ def main_loop(
 
 
 def main() -> None:
+    # This part parses and checks for any errors on input
     if len(sys.argv) != 2:
         print('Invalid arguments!')
         print('Usage: "python3 a-maze-ing.py <config_file>"')
         return
-    init(autoreset=True)
+
     try:
         flags: dict[str, Any] = get_flags(sys.argv[1])
     except Exception:
         print(f'Invalid syntax on {sys.argv[1]}')
         return
+
     if not verify_flags(flags):
         print(f'Invalid syntax on {sys.argv[1]}')
         return
 
+    # After checking, initialize everything
+    init(autoreset=True)
+    colors = init_colors()
+    printing_path = True
     maze: Maze = Maze(
         flags['width'],
         flags['height'],
@@ -100,64 +130,33 @@ def main() -> None:
         flags['exit']
     )
 
+    # Generate the maze once before the first choice
     if flags['perfect']:
         algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
         algorithm()
     else:
         maze.gen_imperfect()
+
     path = solve(maze)
-    maze.output(flags['output_file'], flags['entry'], flags['exit'], path[1])
-    display = Display()
+    maze.output(
+        flags['output_file'],
+        flags['entry'],
+        flags['exit'],
+        path[1]
+    )
 
-    os.system('cls')
-    print(display.print_maze(maze, path[0][1:]), flush=True)
+    print(
+        print_maze(maze, path[0][1:], *colors.values()),
+        flush=True
+    )
 
-    # Sorry Miggs, mas eu nao soube fazer isso sem dar tudo append na main :,(
-    print('=== A-maze-ing ===')
-    i = 0
+    # User input part is in an infinite loop, program will onlyclose when the
+    # user slects option 4
     while True:
-        try:
-            choice = int(input('1. Regenerate a new maze\n'
-                               '2. Show/Hide path from entry to exit\n'
-                               '3. Rotate maze colors\n'
-                               '4. Quit\n\n'))
-            if 0 > choice or choice > 4:
-                print(f'\n\n{Fore.RED} ERROR')
-                print('Please select a integer value between 1 and 4\n\n')
-                continue
-            else:
-                if choice == 1:
-                    if flags['perfect']:
-                        algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
-                        algorithm()
-                    else:
-                        maze.gen_imperfect()
-
-                    path = solve(maze)
-                    maze.output(
-                        flags['output_file'],
-                        flags['entry'],
-                        flags['exit'],
-                        path[1]
-                    )
-                if choice == 2:
-                    os.system('clear')
-                    if i % 2 == 0:
-                        print(display.print_maze(maze, []), flush=True)
-                    else:
-                        print(display.print_maze(maze, path[0][1:]), flush=True)
-                    i += 1
-                if choice == 3:
-                    os.system('clear')
-                    display.set_colors(grid_color)
-                    print(display.print_maze(maze, path[0][1:]), flush=True)
-                if choice == 4:
-                    quit()
-        except ValueError:
-                print(f'\n\n{Fore.RED} ERROR')
-                print('Please select a integer value between 1 and 4\n\n')
-                continue
+        printing_path = main_loop(flags, colors, maze, path, printing_path)
 
 
 if __name__ == '__main__':
+    sys.stdout.reconfigure(encoding='utf-8')
+    init(autoreset=True)
     main()
