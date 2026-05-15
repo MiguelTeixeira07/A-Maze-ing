@@ -13,6 +13,71 @@ from display.colors import random_color
 grid_color = random_color()
 
 
+def main_loop(
+        flags: dict[str, Any],
+        colors: dict[str, str],
+        maze: Maze,
+        path: tuple[list[Maze.Cell], str],
+        printing_path: bool) -> bool:
+
+    print(
+        '=== A-maze-ing ===\n',
+        '1. Regenerate a new maze',
+        '2. Show/Hide path from entry to exit',
+        '3. Rotate maze colors',
+        '4. Quit\n\n', sep='\n'
+    )
+    choice = int(input())
+
+    match choice:
+        case 1:
+            if flags['perfect']:
+                algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
+                algorithm()
+            else:
+                maze.gen_imperfect()
+
+            path = solve(maze)
+            maze.output(
+                flags['output_file'],
+                flags['entry'],
+                flags['exit'],
+                path[1]
+            )
+
+        case 2:
+            os.system('clear')
+            if printing_path:
+                print(
+                    print_maze(maze, [], *colors.values()),
+                    flush=True
+                )
+                printing_path = False
+            else:
+                print(
+                    print_maze(maze, path[0][1:], *colors.values()),
+                    flush=True
+                )
+                printing_path = True
+
+        case 3:
+            os.system('clear')
+            colors['grid_color'] = random_color(*colors.values())
+            print(
+                print_maze(maze, path[0][1:], *colors.values()),
+                flush=True
+            )
+
+        case 4:
+            quit()
+
+        case _:
+            print(f'\n\n{Fore.RED} ERROR')
+            print('Please select a integer value between 1 and 4\n\n')
+
+    return printing_path
+
+
 def main() -> None:
     if len(sys.argv) != 2:
         print('Invalid arguments!')
@@ -62,7 +127,19 @@ def main() -> None:
                 continue
             else:
                 if choice == 1:
-                    main()
+                    if flags['perfect']:
+                        algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
+                        algorithm()
+                    else:
+                        maze.gen_imperfect()
+
+                    path = solve(maze)
+                    maze.output(
+                        flags['output_file'],
+                        flags['entry'],
+                        flags['exit'],
+                        path[1]
+                    )
                 if choice == 2:
                     os.system('clear')
                     if i % 2 == 0:
