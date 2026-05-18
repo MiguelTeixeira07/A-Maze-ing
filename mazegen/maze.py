@@ -7,38 +7,44 @@ class Maze:
     """One maze cell.
 
     Attributes:
-        width (int): Maze width.
-        height (int): Maze height.
+        width (int): Maze width
+        height (int): Maze height
         start (Maze.Cell): Start of the maze
         exit (Maze.Cell): Exit of the maze
-        grid (list[list[Maze.Cell]]): Matrix with every cell.
-        solve_visited (bool): 
+        grid (list[list[Maze.Cell]]): Matrix with every cell
+        sv (bool): Was this cell visited on the algorithm that solves the maze
     """
     class Cell:
         """One maze cell.
 
         Attributes:
-            start (bool): Start of the maze.
-            exit (bool): Exit of the maze.
-            walls (dict[str, bool]): Cell walls.
-            hex (str): Hexadecimal representation of walls.
-            visited (bool): Has the cell been visited on creation.
+            start (bool): Start of the maze
+            exit (bool): Exit of the maze
+            walls (dict[str, bool]): Cell walls
+            hex (str): Hexadecimal representation of walls
+            visited (bool): Has the cell been visited on creation
             sv (bool): Has this cell been visited while solving
         """
-        def __init__(self, x: int, y: int, start=False, exit=False) -> None:
+        def __init__(
+            self,
+            x: int,
+            y: int,
+            start: bool = False,
+            exit: bool = False
+        ) -> None:
             """Initializes a cell.
 
             Creates a cell with every wall up and marks it as start or exit.
             Also creates the visited attribute for generation purposes.
 
             Args:
-                x (int): X position of the cell in the maze.
-                y (int): Y position of the cell in the maze.
-                start (bool): Start of the maze. Defualts to False.
-                exit (bool): End of the maze. Defaults to False.
+                x (int): X position of the cell in the maze
+                y (int): Y position of the cell in the maze
+                start (bool): Start of the maze. Defualts to False
+                exit (bool): End of the maze. Defaults to False
             """
-            self.x = x
-            self.y = y
+            self.x: int = x
+            self.y: int = y
 
             self.start: bool = start
             self.exit: bool = exit
@@ -63,35 +69,35 @@ class Maze:
         Also marks the start and end cells
 
         Args:
-            w (int): maze width.
-            h (int): maze height.
-            st (list[int, int]): x and y coordinates of maze start.
-            ext (list[int, int]): x and y coordinates of maze exit.
+            w (int): maze width
+            h (int): maze height
+            st (list[int, int]): x and y coordinates of maze start
+            ext (list[int, int]): x and y coordinates of maze exit
         """
-        self.pattern_cells = (
-            [((w - 7) // 2), ((h - 5) // 2)], # left of 4
-            [((w - 7) // 2) + 4, ((h - 5) // 2)], # top of 2
-            [((w - 7) // 2) + 5, ((h - 5) // 2)], # top of 2
-            [((w - 7) // 2) + 6, ((h - 5) // 2)], # top of 2
+        self.pattern_cells: list[list[int]] = [
+            [((w - 7) // 2), ((h - 5) // 2)],  # left of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2)],  # top of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2)],  # top of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2)],  # top of 2
 
-            [((w - 7) // 2), ((h - 5) // 2) + 1], # left of 4
-            [((w - 7) // 2) + 6, ((h - 5) // 2) + 1], # right of 2
+            [((w - 7) // 2), ((h - 5) // 2) + 1],  # left of 4
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 1],  # right of 2
 
-            [((w - 7) // 2), ((h - 5) // 2) + 2], # middle of 4
-            [((w - 7) // 2) + 1, ((h - 5) // 2) + 2], # middle of 4
-            [((w - 7) // 2) + 2, ((h - 5) // 2) + 2], # middle of 4
-            [((w - 7) // 2) + 4, ((h - 5) // 2) + 2], # middle of 2
-            [((w - 7) // 2) + 5, ((h - 5) // 2) + 2], # middle of 2
-            [((w - 7) // 2) + 6, ((h - 5) // 2) + 2], # middle of 2
+            [((w - 7) // 2), ((h - 5) // 2) + 2],  # middle of 4
+            [((w - 7) // 2) + 1, ((h - 5) // 2) + 2],  # middle of 4
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 2],  # middle of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 2],  # middle of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2) + 2],  # middle of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 2],  # middle of 2
 
-            [((w - 7) // 2) + 2, ((h - 5) // 2) + 3], # right of 4
-            [((w - 7) // 2) + 4, ((h - 5) // 2) + 3], # left of 2
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 3],  # right of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 3],  # left of 2
 
-            [((w - 7) // 2) + 2, ((h - 5) // 2) + 4], # right of 4
-            [((w - 7) // 2) + 4, ((h - 5) // 2) + 4], # bottom of 2
-            [((w - 7) // 2) + 5, ((h - 5) // 2) + 4], # bottom of 2
-            [((w - 7) // 2) + 6, ((h - 5) // 2) + 4] # bottom of 2
-        )
+            [((w - 7) // 2) + 2, ((h - 5) // 2) + 4],  # right of 4
+            [((w - 7) // 2) + 4, ((h - 5) // 2) + 4],  # bottom of 2
+            [((w - 7) // 2) + 5, ((h - 5) // 2) + 4],  # bottom of 2
+            [((w - 7) // 2) + 6, ((h - 5) // 2) + 4]  # bottom of 2
+        ]
         self.width: int = w
         self.height: int = h
 
@@ -99,8 +105,8 @@ class Maze:
         for y in range(h):
             self.grid.append([])
             for x in range(w):
-                start: bool = (x, y) == st
-                exit: bool = (x, y) == ext
+                start: bool = (x, y) == tuple(st)
+                exit: bool = (x, y) == tuple(ext)
                 self.grid[y].append(Maze.Cell(x, y, start, exit))
 
                 if [x, y] in self.pattern_cells:
@@ -110,12 +116,12 @@ class Maze:
                     if [x, y] in self.pattern_cells:
                         print('Maze entry is inside the pattern cells.')
                         quit()
-                    self.start = self.grid[y][x]
+                    self.start: 'Maze.Cell' = self.grid[y][x]
                 if exit:
                     if [x, y] in self.pattern_cells:
                         print('Maze exit is inside the pattern cells.')
                         quit()
-                    self.exit = self.grid[y][x]
+                    self.exit: 'Maze.Cell' = self.grid[y][x]
 
     def directions(self, cell: 'Maze.Cell') -> list[str]:
         """Gets all valid directions.
@@ -132,7 +138,8 @@ class Maze:
         """
         dirs = []
 
-        x, y = cell.x, cell.y
+        x: int = cell.x
+        y: int = cell.y
 
         if y > 0 and not self.grid[y - 1][x].visited:
             dirs.append('North')
@@ -161,8 +168,9 @@ class Maze:
         Returns:
             Maze.Cell: New cell.
         """
-        x, y = cell.x, cell.y
-        next_cell = cell
+        x: int = cell.x
+        y: int = cell.y
+        next_cell: 'Maze.Cell' = cell
 
         match direction:
             case 'North':
@@ -205,11 +213,11 @@ class Maze:
         # rand.seed(42)
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
-        cell = self.start
+        cell: 'Maze.Cell' = self.start
 
         while True:
             if self.directions(cell):
-                direction = rand.choice(self.directions(cell))
+                direction: str = rand.choice(self.directions(cell))
                 cell = self.move(cell, direction)
                 cell.visited = True
                 history.append(cell)
@@ -231,19 +239,17 @@ class Maze:
         # This is only here to make sure the 2 from 42 is not closed off
         self.gen_hak()
 
-
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
         from display.display import Display
 
-
         # rand.seed(42)
         self.start.visited = True
-        cell = self.start
+        cell: 'Maze.Cell' = self.start
 
         while True:
             if self.directions(cell):
-                direction = rand.choice(self.directions(cell))
+                direction: str = rand.choice(self.directions(cell))
                 cell = self.move(cell, direction)
                 cell.visited = True
 
@@ -256,13 +262,15 @@ class Maze:
             time.sleep(0.005)
 
             if not self.directions(cell):
-                found = False
+                found: bool = False
                 for y in range(self.height):
                     for x in range(self.width):
                         cell = self.grid[y][x]
-                        if (self.grid[y][x].visited and
+                        if (
+                            self.grid[y][x].visited and
                             self.directions(cell) and
-                            any(not wall for wall in cell.walls.values())):
+                            any(not wall for wall in cell.walls.values())
+                        ):
                             found = True
                             break
                     if found:
@@ -275,14 +283,13 @@ class Maze:
     def gen_imperfect(self) -> None:
         from display.display import Display
 
-
         self.gen_dfs()
 
-        pattern = self.pattern_cells
+        pattern: list[list[int]] = self.pattern_cells
 
         for y in range(self.height):
             for x in range(self.width):
-                cell = self.grid[y][x]
+                cell: 'Maze.Cell' = self.grid[y][x]
 
                 if cell.walls['North'] and cell.walls['South']:
                     if cell.walls['East'] and not cell.walls['West']:
@@ -333,14 +340,14 @@ class Maze:
                         continue
 
     def to_hex_string(self) -> str:
-        rows = []
+        rows: list[str] = []
 
         for y in range(self.height):
-            row = ''
+            row: str = ''
             for x in range(self.width):
                 cell = self.grid[y][x]
 
-                value = 0
+                value: int = 0
                 if cell.walls['North']:
                     value |= 1
                 if cell.walls['East']:
@@ -357,7 +364,13 @@ class Maze:
 
         return "\n".join(rows)
 
-    def output(self, f: str, st: tuple, ext: tuple, sol: str) -> None:
+    def output(
+        self,
+        f: str,
+        st: tuple[int, int],
+        ext: tuple[int, int],
+        sol: str
+    ) -> None:
         """Writes the hex maze to the output file.
 
         Iterates each cell of the maze and concatenates it to the maze_out
@@ -372,7 +385,7 @@ class Maze:
             ext (list[int, int]): x and y coordinates of maze exit.
             sol (str): Maze solution path.
         """
-        maze_string = self.to_hex_string()
+        maze_string: str = self.to_hex_string()
 
         maze_string += f'\n\n{st[0]},{st[1]}'
         maze_string += f'\n{ext[0]},{ext[1]}'

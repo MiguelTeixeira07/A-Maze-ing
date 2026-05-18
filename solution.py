@@ -1,4 +1,4 @@
-from maze import Maze
+from mazegen.maze import Maze
 
 
 def solve(maze: Maze) -> tuple[list[Maze.Cell], str]:

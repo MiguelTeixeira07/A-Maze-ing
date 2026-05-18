@@ -2,27 +2,25 @@ import sys
 import os
 import random as rand
 from typing import Any
-from colorama import init, Fore
-from maze import Maze
+from collections.abc import Callable
+from colorama import init
+from mazegen.maze import Maze
 from input_parser import get_flags, verify_flags
 from solution import solve
 from display import Display
 
 
 def main_loop(
-        flags: dict[str, Any],
-        colors: dict[str, str],
-        maze: Maze,
-        path: tuple[list[Maze.Cell], str]
-    ) -> tuple[Maze, tuple[list[Maze.Cell], str]]:
-    if not hasattr(main_loop, 'printing_path'):
-        main_loop.printing_path = True
-
+    flags: dict[str, Any],
+    maze: Maze,
+    path: tuple[list[Maze.Cell], str],
+    printing_path: bool
+) -> tuple[Maze, tuple[list[Maze.Cell], str], bool]:
     os.system('clear')
     print(
         Display.print_maze(
-            maze, 
-            path[0][1:] if main_loop.printing_path else []
+            maze,
+            path[0][1:] if printing_path else []
         ),
         '\n=== A-maze-ing ===\n',
         '1. Regenerate a new maze',
@@ -30,7 +28,7 @@ def main_loop(
         '3. Rotate maze colors',
         '4. Quit\n\n', sep='\n'
     )
-    choice = input()
+    choice: str = input()
 
     match choice:
         # Regenerate a new maze
@@ -43,7 +41,9 @@ def main_loop(
             )
 
             if flags['perfect']:
-                algorithm = rand.choice([new_maze.gen_dfs, new_maze.gen_hak])
+                algorithm: Callable[[], None] = rand.choice(
+                    [new_maze.gen_dfs, new_maze.gen_hak]
+                )
                 algorithm()
             else:
                 new_maze.gen_imperfect()
@@ -51,24 +51,22 @@ def main_loop(
             maze = new_maze
             path = solve(maze)
 
-            return maze, path
+            return maze, path, printing_path
 
         # Show/Hide path from entry to exit
         case '2':
             os.system('clear')
-            if main_loop.printing_path:
+            if printing_path:
                 print(Display.print_maze(maze, []))
-                main_loop.printing_path = False
+                printing_path = False
             else:
                 print(Display.print_maze(maze, path[0][1:]))
-                main_loop.printing_path = True
+                printing_path = True
 
         # Rotate maze colors
         case '3':
             os.system('clear')
-            colors['grid_color'] = Display.set_colors(
-                exclude=Display.colors['g_color']
-            )
+            Display.set_colors(exclude=Display.colors['g_color'])
             print(Display.print_maze(maze, path[0][1:]))
 
         # Quit
@@ -85,7 +83,7 @@ def main_loop(
             # print(f'\n\n{Fore.RED} ERROR')
             # print('Please select a integer value between 1 and 4\n\n')
 
-    return maze, path
+    return maze, path, printing_path
 
 
 def main() -> None:
@@ -114,15 +112,18 @@ def main() -> None:
         flags['entry'],
         flags['exit']
     )
+    printing_path: bool = True
 
     # Generate the maze once before the first choice
     if flags['perfect']:
-        algorithm = rand.choice([maze.gen_dfs, maze.gen_hak])
+        algorithm: Callable[[], None] = rand.choice(
+            [maze.gen_dfs, maze.gen_hak]
+        )
         algorithm()
     else:
         maze.gen_imperfect()
 
-    path = solve(maze)
+    path: tuple[list[Maze.Cell], str] = solve(maze)
     if path[1] == '':
         print('Maze entry/exit is one of the pattern cells')
         return
@@ -133,20 +134,16 @@ def main() -> None:
         path[1]
     )
 
-    print(Display.print_maze(maze, path[0][1:]))
-
     # User input part is in an infinite loop, program will onlyclose when the
     # user slects option 4
     while True:
-        maze, path = main_loop(
+        maze, path, printing_path = main_loop(
             flags,
-            Display.colors,
             maze,
             path,
+            printing_path
         )
 
 
 if __name__ == '__main__':
-    sys.stdout.reconfigure(encoding='utf-8')
-    init(autoreset=True)
     main()

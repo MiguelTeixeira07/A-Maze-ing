@@ -1,4 +1,5 @@
 from typing import Any
+from collections.abc import Callable
 
 
 def get_flags(config_file_path: str) -> dict[str, Any]:
@@ -18,7 +19,7 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
         SyntaxError: Is raised when a line that is not a comment doesn't
         contain a flag on the beginning.
     """
-    FLAGS = {
+    FLAGS: dict[str, Callable[[str], tuple[int, int] | int | str | bool]] = {
         'WIDTH': int,
         'HEIGHT': int,
         'ENTRY': lambda v: (int(v.split(',')[0]), int(v.split(',')[1])),

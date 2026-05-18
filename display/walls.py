@@ -1,16 +1,17 @@
 from enum import Enum
+from typing import Literal
 
 
 class Walls(Enum):
-    EMPTY = "     "
+    EMPTY: Literal["     "] = "     "
 
-    TOP = "█████"
+    TOP: Literal["█████"] = "█████"
 
-    RIGHT = "    █"
+    RIGHT: Literal["    █"] = "    █"
 
-    LEFT = "█    "
+    LEFT: Literal["█    "] = "█    "
 
-    LEFT_AND_RIGHT = "█   █"
+    LEFT_AND_RIGHT: Literal["█   █"] = "█   █"
 
-    def __str__(self):
-        return self.value
+    def __str__(self) -> str:
+        return str(self.value)
