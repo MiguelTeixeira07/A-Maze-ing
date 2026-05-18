@@ -1,15 +1,6 @@
 import random as rand
-from display.colors import random_color
 import time
 import os
-
-grid_color = random_color()
-logo_color = random_color(grid_color)
-entry_color = random_color(grid_color, logo_color)
-exit_color = random_color(grid_color, logo_color, entry_color)
-path_collor = random_color(grid_color, logo_color, entry_color, exit_color)
-
-colors = grid_color, logo_color, entry_color, exit_color, path_collor
 
 
 class Maze:
@@ -116,8 +107,14 @@ class Maze:
                     self.grid[y][x].visited = True
 
                 if start:
+                    if [x, y] in self.pattern_cells:
+                        print('Maze entry is inside the pattern cells.')
+                        quit()
                     self.start = self.grid[y][x]
                 if exit:
+                    if [x, y] in self.pattern_cells:
+                        print('Maze exit is inside the pattern cells.')
+                        quit()
                     self.exit = self.grid[y][x]
 
     def directions(self, cell: 'Maze.Cell') -> list[str]:
@@ -209,7 +206,6 @@ class Maze:
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
         cell = self.start
-        display = Display()
 
         while True:
             if self.directions(cell):
@@ -223,7 +219,7 @@ class Maze:
 
             os.system('clear')
             print(
-                display.print_maze(self, []),
+                Display.print_maze(self, []),
                 end='',
                 flush=True
             )
@@ -232,7 +228,7 @@ class Maze:
             if not history:
                 break
 
-        # This is only here to make sure the 2 is not closed off
+        # This is only here to make sure the 2 from 42 is not closed off
         self.gen_hak()
 
 
@@ -244,7 +240,6 @@ class Maze:
         # rand.seed(42)
         self.start.visited = True
         cell = self.start
-        display = Display()
 
         while True:
             if self.directions(cell):
@@ -254,7 +249,7 @@ class Maze:
 
             os.system('clear')
             print(
-                display.print_maze(self, []),
+                Display.print_maze(self, []),
                 end='',
                 flush=True
             )
@@ -284,7 +279,6 @@ class Maze:
         self.gen_dfs()
 
         pattern = self.pattern_cells
-        display = Display()
 
         for y in range(self.height):
             for x in range(self.width):
@@ -296,7 +290,7 @@ class Maze:
                             cell = self.move(cell, 'East')
                             os.system('clear')
                             print(
-                                display.print_maze(self, []),
+                                Display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
@@ -307,7 +301,7 @@ class Maze:
                             cell = self.move(cell, 'West')
                             os.system('clear')
                             print(
-                                display.print_maze(self, []),
+                                Display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
@@ -320,7 +314,7 @@ class Maze:
                             cell = self.move(cell, 'North')
                             os.system('clear')
                             print(
-                                display.print_maze(self, []),
+                                Display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
@@ -331,7 +325,7 @@ class Maze:
                             cell = self.move(cell, 'South')
                             os.system('clear')
                             print(
-                                display.print_maze(self, []),
+                                Display.print_maze(self, []),
                                 end='',
                                 flush=True
                             )
