@@ -1,54 +1,41 @@
-from mazegen.maze import Maze
+from collections import deque
 
+def solve(maze):
+    start = maze.start
 
-def solve(maze: Maze) -> tuple[list[Maze.Cell], str]:
-    def flood_fill(
-        cell: Maze.Cell,
-        path: list[Maze.Cell],
-        turns: str
-    ) -> tuple[list[Maze.Cell], str]:
+    queue = deque()
+    queue.append((start, [start], ''))
+
+    visited = set()
+    visited.add((start.x, start.y))
+
+    directions = [
+        ('North', 0, -1, 'N'),
+        ('East', 1, 0, 'E'),
+        ('South', 0, 1, 'S'),
+        ('West', -1, 0, 'W')
+    ]
+
+    while queue:
+        cell, path, turns = queue.popleft()
 
         if cell.exit:
             return (path, turns)
 
-        cell.sv = True
+        for wall, dx, dy, letter in directions:
+            if not cell.walls[wall]:
+                nx = cell.x + dx
+                ny = cell.y + dy
 
-        if not cell.walls['North'] and not maze.grid[cell.y - 1][cell.x].sv:
-            result = flood_fill(
-                maze.grid[cell.y - 1][cell.x],
-                [*path, cell],
-                turns + 'N'
-            )
-            if result[0] and result[1]:
-                return result
+                if (nx, ny) not in visited:
+                    visited.add((nx, ny))
 
-        if not cell.walls['East'] and not maze.grid[cell.y][cell.x + 1].sv:
-            result = flood_fill(
-                maze.grid[cell.y][cell.x + 1],
-                [*path, cell],
-                turns + 'E'
-            )
-            if result[0] and result[1]:
-                return result
+                    next_cell = maze.grid[ny][nx]
 
-        if not cell.walls['South'] and not maze.grid[cell.y + 1][cell.x].sv:
-            result = flood_fill(
-                maze.grid[cell.y + 1][cell.x],
-                [*path, cell],
-                turns + 'S'
-            )
-            if result[0] and result[1]:
-                return result
+                    queue.append((
+                        next_cell,
+                        path + [next_cell],
+                        turns + letter
+                    ))
 
-        if not cell.walls['West'] and not maze.grid[cell.y][cell.x - 1].sv:
-            result = flood_fill(
-                maze.grid[cell.y][cell.x - 1],
-                [*path, cell],
-                turns + 'W'
-            )
-            if result[0] and result[1]:
-                return result
-
-        return ([], '')
-
-    return flood_fill(maze.start, [], '')
+    return ([], '')

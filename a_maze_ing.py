@@ -79,10 +79,6 @@ def main_loop(
             )
             quit()
 
-        # case _:
-            # print(f'\n\n{Fore.RED} ERROR')
-            # print('Please select a integer value between 1 and 4\n\n')
-
     return maze, path, printing_path
 
 
