@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "a-maze-ing"
+version = "0.1.0"
+description = "Maze generator"
+authors = ["MiguelTeixeira07 <miguelcasacateixeira@gmail.com>", "mesinidotexe <victormesini007@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+colorama = "^0.4.6"
+mazegen = "^0.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
