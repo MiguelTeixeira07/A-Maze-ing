@@ -51,6 +51,18 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
 
 
 def verify_flags(flags: dict[str, Any]) -> bool:
+    """Checks if every value is valid for every flag.
+
+    Does a bunch of checks for each flag to see if every single on of them is
+    valid and will let the rest of the progeam run without crashes related to
+    flags.
+
+    Args:
+        flags (dict[str, Any]): Dictionary containing all of the flags.
+
+    Returns:
+        bool: False if there are errors with any flag, otherwise returns True.
+    """
     if flags['width'] < 1 or flags['height'] < 1:
         return False
 

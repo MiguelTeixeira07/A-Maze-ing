@@ -14,14 +14,16 @@ class Display:
         maze: Maze,
         solution: list[Maze.Cell]
     ) -> str:
-        """
-        The method responsible to return the string with the maze user output
+        """Returns the main maze output string for the user.
 
-        Runs through 3 loops:\n
-        The first for every row in the grid\n
-        The second to make sure the space inside the grid is printed\n
-        The third (inner) determines which characters and colors should be
-        added to the output string.
+        Goes through the whole maze to append each cell's walls to the output
+        string.
+        It does this by going through each row tiwce, one to append the top
+        wall of each cell, and another one to append both side's walls. After
+        going through the entire maze, it appends a full line on the bottom to
+        serve as the bottom wall for the bottom-most cells.
+        This way of printing works because wach cell shares walls, so printing
+        only the top wall of each cell hence printing the bottom wall too.
 
         Args:
             maze (Maze): class Maze containing all its attributes.
@@ -149,6 +151,15 @@ class Display:
 
     @classmethod
     def set_colors(cls, exclude: Opt[str] = None) -> None:
+        """Changes the colors of each part of the maze.
+
+        Picks a random color excluding the color passed on the arguments and
+        every past color picked on this iteration.
+
+        Attributes:
+            exclude (Opt[str]): One color that will not be repeated.
+            Defaults to None.
+        """
         cls.colors['g_color'] = random_color(
             exclude
         )

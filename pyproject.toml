@@ -1,13 +1,15 @@
 [tool.poetry]
 name = "a-maze-ing"
-version = "0.1.0"
+version = "1.0.0"
 description = "Maze generator"
 authors = ["MiguelTeixeira07 <miguelcasacateixeira@gmail.com>", "mesinidotexe <victormesini007@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
+mypy = "^1.5.1"
 colorama = "^0.4.6"
+types-colorama = "^0.4.14"
 mazegen = "^0.0.2"
 
 

@@ -1,6 +1,8 @@
 __pycache__/
 .mypy_cache/
+venv/
 config.txt
 output_validator.py
 *.txt
+!default_config.txt
 *.png

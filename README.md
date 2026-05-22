@@ -44,14 +44,17 @@ The project was designed with modularity in mind, allowing the maze generation l
 
 ### Installation
 
-- Clone the repository: A-Maze_ing
-- ```bash
-- git clone <https://github.com/MiguelTeixeira07/A-Maze-ing.git>
-- cd A_Maze_ing
+```bash
+git clone https://github.com/MiguelTeixeira07/A-Maze-ing.git
+cd A_Maze_ing
+```
 
 ### Execution
 
-- Run the code with "python3 a_maze_ing.py config.txt"
+- Run the code program:
+```bash
+python3 a_maze_ing.py <configuration_file.txt>
+```
 - Select numbers 1 to 3 to interact with the maze and 4 to quit interaction
 
 ### Resources
@@ -98,8 +101,9 @@ AI was not used to generate the project architecture or final implementation aut
 
 ### Team Roles
 
-- vmesini-: Responsible for the display part (ANSI, walls and path), user interation menu
-- migteixe: 
+- vmesini-: Responsible for the display part (ANSI, walls and path), user interation menu and Makefile
+- migteixe: Responsible for maze generation/solving algorithms and anything else related with the maze backend, such as generating the output file.
+- Both parts were tested by both members of the group and both parties helped solve each other's errors.
 
 ### Anticipated planning and expectations
 

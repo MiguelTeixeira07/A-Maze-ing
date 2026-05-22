@@ -1,6 +1,7 @@
 import random as rand
 import time
 import os
+from collections.abc import Callable
 
 
 class Maze:
@@ -207,10 +208,11 @@ class Maze:
         visited yet.
         If it backtracks all the way back to the start, then it means all the
         cells have been visited, therefore the maze has been fully generated,
-        with all cells accessible.
+        with all cells accessible (for the sole exception of the 42 pattern
+        cells).
         """
         from display.display import Display
-        # rand.seed(42)
+
         history: list['Maze.Cell'] = [self.start]
         self.start.visited = True
         cell: 'Maze.Cell' = self.start
@@ -226,6 +228,7 @@ class Maze:
                 cell = history.pop()
 
             os.system('clear')
+            print('Maze generation algorithm: Depth-first search')
             print(
                 Display.print_maze(self, []),
                 end='',
@@ -241,9 +244,22 @@ class Maze:
 
     # Hunt and Kill algorith - perfect maze
     def gen_hak(self) -> None:
+        """Generates a perfect maze with the hunt-and-kill algorithm.
+
+        Starts the generation on the entry of the maze.
+        While the maze is not fully generated, the algorithm will pick a
+        random direction and move there if it has not been visited yet.
+        When the algorithm gets to a dead-end, it looks from left to right and
+        top to bottom of the maze until it finds a visited cell that has
+        neighbours which have not been visited yet.
+        If it gets to the bottom-right corner of the maze while looking for a
+        cell to proceed maze generation and doesn't find any, then it means
+        all the cells have been visited, therefore the maze has been fully
+        generated, with all cells accessible (for the sole exception of the 42
+        pattern cells).
+        """
         from display.display import Display
 
-        # rand.seed(42)
         self.start.visited = True
         cell: 'Maze.Cell' = self.start
 
@@ -254,6 +270,7 @@ class Maze:
                 cell.visited = True
 
             os.system('clear')
+            print('Maze generation algorithm: Hunt-and-kill')
             print(
                 Display.print_maze(self, []),
                 end='',
@@ -280,10 +297,24 @@ class Maze:
                     break
 
     # My own algorithm - imperfect maze
-    def gen_imperfect(self) -> None:
+    def braid(self, base_algorithm: Callable[[], None]) -> None:
+        """Generates an imperfect (braided) maze.
+
+        Generates the maze with the algorithm provided. After the maze is
+        fully generated, it will look for any dead end (cells with 3 walls)
+        and break a wall, so that the maze has loops.
+        This way of generating an imperfect maze prevents any large open areas
+        and also prevents any closed-off areas. This way every single point of
+        the maze is accessible (except the 42 pattern cells) and the maze can
+        have more than one path from entry to exit.
+
+        Args:
+            base_algorithm (Callable[[], None]): The maze generating algorithm
+            that will serve as the basis before the maze gets braided.
+        """
         from display.display import Display
 
-        self.gen_dfs()
+        base_algorithm()
 
         pattern: list[list[int]] = self.pattern_cells
 
@@ -291,55 +322,61 @@ class Maze:
             for x in range(self.width):
                 cell: 'Maze.Cell' = self.grid[y][x]
 
-                if cell.walls['North'] and cell.walls['South']:
-                    if cell.walls['East'] and not cell.walls['West']:
-                        if x != self.width - 1 and [x + 1, y] not in pattern:
-                            cell = self.move(cell, 'East')
-                            os.system('clear')
-                            print(
-                                Display.print_maze(self, []),
-                                end='',
-                                flush=True
-                            )
-                            time.sleep(0.005)
-                        continue
-                    if cell.walls['West'] and not cell.walls['East']:
-                        if x != 0 and [x - 1, y] not in pattern:
-                            cell = self.move(cell, 'West')
-                            os.system('clear')
-                            print(
-                                Display.print_maze(self, []),
-                                end='',
-                                flush=True
-                            )
-                            time.sleep(0.005)
-                        continue
+                walls = [w for w in cell.walls.values()]
+                up_walls = [w for w in cell.walls.values() if w]
+                if len(up_walls) != 3:
+                    continue
 
-                if cell.walls['East'] and cell.walls['West']:
-                    if cell.walls['North'] and not cell.walls['South']:
-                        if y != 0 and [x, y - 1] not in pattern:
-                            cell = self.move(cell, 'North')
-                            os.system('clear')
-                            print(
-                                Display.print_maze(self, []),
-                                end='',
-                                flush=True
-                            )
-                            time.sleep(0.005)
-                        continue
-                    if cell.walls['South'] and not cell.walls['North']:
-                        if y != self.height - 1 and [x, y + 1] not in pattern:
-                            cell = self.move(cell, 'South')
-                            os.system('clear')
-                            print(
-                                Display.print_maze(self, []),
-                                end='',
-                                flush=True
-                            )
-                            time.sleep(0.005)
-                        continue
+                if (
+                    not walls[0] and
+                    y != self.height - 1 and
+                    [x, y + 1] not in pattern
+                ):
+                    cell = self.move(cell, 'South')
+
+                if (
+                    not walls[1] and
+                    x != 0 and
+                    [x - 1, y] not in pattern
+                ):
+                    cell = self.move(cell, 'West')
+
+                if (
+                    not walls[2] and
+                    y != 0 and
+                    [x, y - 1] not in pattern
+                ):
+                    cell = self.move(cell, 'North')
+
+                if (
+                    not walls[3] and
+                    x != self.width - 1 and
+                    [x + 1, y] not in pattern
+                ):
+                    cell = self.move(cell, 'East')
+
+                os.system('clear')
+                print('Maze generation algorithm:', end=' ', flush=True)
+                if base_algorithm == self.gen_dfs:
+                    print('Depth-first search', flush=True)
+                else:
+                    print('Hunt-and-kill', flush=True)
+                print(Display.print_maze(self, []), end='', flush=True)
+                time.sleep(0.005)
 
     def to_hex_string(self) -> str:
+        """Generates the maze output file string based on every cell's walls.
+
+        Checks every cell in every row of the maze and generates a number
+        ranging from 0 to 15 for that cell.
+        After generating each number, it is converted to hexadecimal and
+        appended to the string. After each row is written to the string, a
+        newline character is added in order for it to have the same dimentions
+        as the maze.
+
+        Returns:
+            str: The maze in a hexadecimal string format.
+        """
         rows: list[str] = []
 
         for y in range(self.height):
@@ -357,7 +394,7 @@ class Maze:
                 if cell.walls['West']:
                     value |= 8
 
-                cell.hex = format(value, 'X')
+                cell.hex = hex(value)[2:].upper()
                 row += cell.hex
 
             rows.append(row)

@@ -1,17 +1,33 @@
 from enum import Enum
-from typing import Literal
 
 
 class Walls(Enum):
-    EMPTY: Literal["     "] = "     "
+    """Represents the possible states to print a wall.
 
-    TOP: Literal["█████"] = "█████"
+    Attributes:
+        EMPTY: No top wall.
+        TOP: Top wall.
+        LEFT: Left wall only.
+        RIGHT: Right wall only.
+        LEFT_AND_RIGHT: Left and right wall in the same cell.
+    """
+    EMPTY = '     '
 
-    RIGHT: Literal["    █"] = "    █"
+    TOP = '█████'
 
-    LEFT: Literal["█    "] = "█    "
+    RIGHT = '    █'
 
-    LEFT_AND_RIGHT: Literal["█   █"] = "█   █"
+    LEFT = '█    '
+
+    LEFT_AND_RIGHT = '█   █'
 
     def __str__(self) -> str:
+        """Turns each value into a string
+
+        Converts each value into a string for them to be printable instead of
+        an instance.
+
+        Returns:
+            str: The value being retrieved as a string.
+        """
         return str(self.value)
