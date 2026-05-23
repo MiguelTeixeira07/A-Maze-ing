@@ -19,7 +19,7 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
         SyntaxError: Is raised when a line that is not a comment doesn't
         contain a flag on the beginning.
     """
-    FLAGS: dict[str, Callable[[str], tuple[int, int] | int | str | bool]] = {
+    OPERATE: dict[str, Callable[[str], tuple[int, int] | int | str | bool]] = {
         'WIDTH': int,
         'HEIGHT': int,
         'ENTRY': lambda v: (int(v.split(',')[0]), int(v.split(',')[1])),
@@ -30,22 +30,41 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
 
     with open(config_file_path, 'r') as config_file:
         flags: dict[str, Any] = {}
+        seen: list[str] = []
         for line in config_file:
             if line[0] == '#':
                 continue
 
-            for flag, action in FLAGS.items():
-                if not line[:len(flag)] == flag:
-                    if flag == 'PERFECT':
-                        raise SyntaxError('Invalid syntax')
-                    continue
+            flag, str_value = line.split('=')
+            if (
+                flag in ('ENTRY', 'EXIT') and
+                (
+                    len(str_value.split(',')) != 2 or
+                    not str_value.split(',')[0].isdigit() or
+                    not str_value.split(',')[1].strip('\n').isdigit()
+                )
+            ):
+                raise SyntaxError
+            if (
+                flag == 'OUTPUT_FILE' and
+                (
+                    len(str_value.split('.')) != 2 or
+                    str_value.split('.')[1] != 'txt\n'
+                )
+            ):
+                raise SyntaxError
+            if (
+                flag == 'PERFECT' and
+                str_value not in ('True', 'False')
+            ):
+                raise SyntaxError
 
-                str_value: str = line[len(flag) + 1:]
-                value: Any = action(str_value.strip('\n'))
-                if flag == 'PERFECT' and str_value not in ['True', 'False']:
-                    raise SyntaxError('Invalid syntax')
-                flags.update({flag.lower(): value})
-                break
+            if flag in seen:
+                raise SyntaxError
+
+            seen.append(flag)
+            value: Any = OPERATE[flag](str_value.strip('\n'))
+            flags.update({flag.lower(): value})
 
     return flags
 
@@ -63,12 +82,15 @@ def verify_flags(flags: dict[str, Any]) -> bool:
     Returns:
         bool: False if there are errors with any flag, otherwise returns True.
     """
+    if len(flags) != 6:
+        return False
+
     if flags['width'] < 1 or flags['height'] < 1:
         return False
 
-    if flags['width'] > 40 or flags['width'] < 9:
+    if flags['width'] > 100 or flags['width'] < 9:
         return False
-    if flags['height'] > 40 or flags['height'] < 7:
+    if flags['height'] > 100 or flags['height'] < 7:
         return False
 
     if flags['entry'][0] < 0 or flags['entry'][1] < 0:
