@@ -162,9 +162,6 @@ def main() -> None:
         maze.braid(algorithm)
 
     path: tuple[list[Maze.Cell], str] = solve(maze)
-    if path[1] == '':
-        print('Maze entry/exit is one of the pattern cells')
-        return
     maze.output(
         flags['output_file'],
         flags['entry'],
