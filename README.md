@@ -111,7 +111,8 @@ The project meets all the functional and stylistic requirements, and we focused 
 Automated tests could also have been added to provide help in debugging during the project's development process.
 
 ### Specific Tools Used
-- Git
+#### Git
+Git was used for project and version management purposes, where each party had a different branch and experimental versions and tests were merged into a "dev" branch. When a version was stable and good enough for setting a baseline of what the project was looking like, dev was merged into main.
 
 ### Resources
 
