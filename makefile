@@ -11,31 +11,51 @@ STRICT = --strict
 
 DEBUG = -m pdb
 
-FIND = find .
-FOLDER = -type d
-FILE = -type f
+FIND = find . -type d
 PYCACHE = -name '__pycache__'
-REMOVE = rm -rf
+MYPY_CACHE = -name '.mypy_cache'
+REMOVE = -exec rm -rf {} +
 
+
+.SILENT:
 
 all: install
 
 install:
-	poetry install
+	echo 'Installing dependencies...'
+	poetry install > /dev/null
+	echo 'Done.'
+	echo ''
 
 run: install
 	$(EXECUTE) $(MAIN) $(CONFIG_FILE)
 
-debug:
+debug: install
+	echo 'Running in Debug mode'
+	echo ''
 	$(EXECUTE) $(DEBUG) $(MAIN) $(CONFIG_FILE)
 
 clean:
-	$(FIND) $(FOLDER) $(PYCACHE) -exec $(REMOVE) {}
+	echo 'Cleaning caches and temporary files...'
+	$(FIND) $(PYCACHE) $(REMOVE)
+	$(FIND) $(MYPY_CACHE) $(REMOVE)
+	echo 'Done.'
+	echo ''
 
-lint:
-	$(EXECUTE) $(FLAKE)
+lint: install
+	echo 'Running flake8...'
+	$(EXECUTE) $(FLAKE) --exclude venv/
+	echo ''
+	echo 'Running mypy...'
 	$(EXECUTE) $(MYPY) $(MYPY_FLAGS)
+	echo 'Done.'
+	echo ''
 
-lint-strict:
-	$(EXECUTE) $(FLAKE)
+lint-strict: install
+	echo 'Running flake8...'
+	$(EXECUTE) $(FLAKE) --exclude venv/
+	echo ''
+	echo 'Running mypy strict...'
 	$(EXECUTE) $(MYPY) $(STRICT)
+	echo 'Done.'
+	echo ''

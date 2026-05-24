@@ -42,10 +42,24 @@ The project was designed with modularity in mind, allowing the maze generation l
 - Colorama
 
 ### Installation
-
+First, clone the repository:
 ```bash
-git clone https://github.com/MiguelTeixeira07/A-Maze-ing.git
+git clone <repository_link>
 cd A_Maze_ing
+```
+When the repository is cloned, install poetry (it is recomended that for this step you use a virtual environment, also note that if the virtual environment you use is inside the project folder, there will be flake8 errors related to it):
+```bash
+pip install poetry
+```
+With poetry installed, you can install all of the dependencies required for this project with either one of the following commands:
+```bash
+make
+```
+```bash
+make install
+```
+```bash
+poetry install
 ```
 
 ### Execution
@@ -54,7 +68,11 @@ cd A_Maze_ing
 ```bash
 python3 a_maze_ing.py <configuration_file.txt>
 ```
-- Select numbers 1 to 5 to interact with the maze. 5 ends the program execution.
+Anternatively, you can run:
+```bash
+make run
+```
+and use the default config file provided
 
 ## Configuration
 *The configuration of the maze will be made through the configuration file. This file will treat the flags by name and not order*

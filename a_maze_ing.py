@@ -116,7 +116,7 @@ def main_loop(
                 flags['exit'],
                 path[1]
             )
-            sys.exit(1)
+            sys.exit(0)
 
     return maze, path, printing_path, gen_algorithm
 
