@@ -44,7 +44,7 @@ The project was designed with modularity in mind, allowing the maze generation l
 ### Installation
 First, clone the repository:
 ```bash
-git clone <repository_link>
+git clone <git@github.com:MiguelTeixeira07/A-Maze-ing.git>
 cd A_Maze_ing
 ```
 When the repository is cloned, install poetry (it is recomended that for this step you use a virtual environment, also note that if the virtual environment you use is inside the project folder, there will be flake8 errors related to it):
@@ -82,8 +82,8 @@ FLAG=<value>
 ```
 
 - Available flags:
-    - WIDTH <x> (min=9, max=40)
-    - HEIGHT <x> (min=7, max=40)
+    - WIDTH <x> (min=9, max=100)
+    - HEIGHT <x> (min=7, max=100)
     - ENTRY <x,y>
     - EXIT <x,y>
     - OUTPUT_FILE <file.txt>
@@ -109,13 +109,13 @@ If it gets to the bottom-right corner of the maze while looking for a cell to pr
 
 ## Code Reusability
 
-- mazegen module is reusable, by adding an \__init__.py inside the directory and adding mazegen in .toml file with poetry add mazegen
+- Mazegen module is reusable, by adding an \__init__.py inside the directory and adding mazegen in .toml file with poetry add mazegen
 
 ## Project Management
 
 ### Team Roles
 
-- vmesini-: Responsible for the display part (ANSI, walls and path), user interation menu and Makefile
+- vmesini-: Responsible for the display part (ANSI, walls and path) and user interation menu.
 - migteixe: Responsible for maze generation/solving algorithms and anything else related with the maze backend, such as generating the output file.
 - Both parts were tested by both members of the group and both parties helped solve each other's errors.
 
