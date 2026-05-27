@@ -88,6 +88,7 @@ FLAG=<value>
     - EXIT <x,y>
     - OUTPUT_FILE <file.txt>
     - PERFECT <True/False>
+*Note that every flag listed needs to be on the configuration file*
 
 ## Chosen algorithms
 *This program uses a total of 2 perfect maze generation algorithms and an additional maze braiding algorithm that can be based on either one of the perfect maze generation algorithms.*

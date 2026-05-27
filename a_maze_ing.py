@@ -38,6 +38,7 @@ def main_loop(
         next iteration.
     """
     os.system('clear')
+    print()
     print('Maze generation algorithm:', end=' ')
     if gen_algorithm == maze.gen_dfs:
         print('Depth-first search')
@@ -80,6 +81,12 @@ def main_loop(
 
             maze = new_maze
             path = solve(maze)
+            maze.output(
+                flags['output_file'],
+                flags['entry'],
+                flags['exit'],
+                path[1]
+            )
 
             return maze, path, printing_path, gen_algorithm
 
@@ -156,6 +163,7 @@ def main() -> None:
 
     # Generate the maze once before the first choice
     algorithm: Callable[[], None] = rand.choice([maze.gen_dfs, maze.gen_hak])
+    os.system('clear')
     if flags['perfect']:
         algorithm()
     else:
@@ -182,4 +190,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)

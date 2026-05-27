@@ -1,6 +1,6 @@
 import random as rand
 import time
-import os
+import sys
 from collections.abc import Callable
 
 
@@ -116,12 +116,12 @@ class Maze:
                 if start:
                     if [x, y] in self.pattern_cells:
                         print('Maze entry is inside the pattern cells.')
-                        quit()
+                        sys.exit(0)
                     self.start: 'Maze.Cell' = self.grid[y][x]
                 if exit:
                     if [x, y] in self.pattern_cells:
                         print('Maze exit is inside the pattern cells.')
-                        quit()
+                        sys.exit(0)
                     self.exit: 'Maze.Cell' = self.grid[y][x]
 
     def directions(self, cell: 'Maze.Cell') -> list[str]:
@@ -227,7 +227,7 @@ class Maze:
             while not self.directions(cell) and history:
                 cell = history.pop()
 
-            os.system('clear')
+            print('\033[H')
             print('Maze generation algorithm: Depth-first search')
             print(
                 Display.print_maze(self, []),
@@ -269,7 +269,7 @@ class Maze:
                 cell = self.move(cell, direction)
                 cell.visited = True
 
-            os.system('clear')
+            print('\033[H')
             print('Maze generation algorithm: Hunt-and-kill')
             print(
                 Display.print_maze(self, []),
@@ -355,7 +355,9 @@ class Maze:
                 ):
                     cell = self.move(cell, 'East')
 
-                os.system('clear')
+
+                print('\033[H')
+
                 print('Maze generation algorithm:', end=' ', flush=True)
                 if base_algorithm == self.gen_dfs:
                     print('Depth-first search', flush=True)
@@ -406,7 +408,7 @@ class Maze:
         f: str,
         st: tuple[int, int],
         ext: tuple[int, int],
-        sol: str
+        path: str
     ) -> None:
         """Writes the hex maze to the output file.
 
@@ -420,13 +422,13 @@ class Maze:
             f (str): Path of maze output file.
             st (list[int, int]): x and y coordinates of maze start.
             ext (list[int, int]): x and y coordinates of maze exit.
-            sol (str): Maze solution path.
+            path (str): Maze solution path.
         """
         maze_string: str = self.to_hex_string()
 
         maze_string += f'\n\n{st[0]},{st[1]}'
         maze_string += f'\n{ext[0]},{ext[1]}'
-        maze_string += f'\n{sol}'
+        maze_string += f'\n{path}'
 
         with open(f, 'w') as output_file:
             output_file.write(maze_string)

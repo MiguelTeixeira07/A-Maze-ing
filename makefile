@@ -2,6 +2,11 @@ MAIN = a_maze_ing.py
 CONFIG_FILE = default_config.txt
 
 EXECUTE = python3
+MUTE = > /dev/null
+
+PIP = -m pip install
+
+POETRY = -m poetry
 
 FLAKE = -m flake8 .
 
@@ -23,7 +28,8 @@ all: install
 
 install:
 	echo 'Installing dependencies...'
-	poetry install > /dev/null
+	$(EXECUTE) $(PIP) poetry $(MUTE)
+	$(EXECUTE) $(POETRY) install $(MUTE)
 	echo 'Done.'
 	echo ''
 
