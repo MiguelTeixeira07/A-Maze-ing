@@ -44,14 +44,10 @@ The project was designed with modularity in mind, allowing the maze generation l
 ### Installation
 First, clone the repository:
 ```bash
-git clone <git@github.com:MiguelTeixeira07/A-Maze-ing.git>
+git clone <repository_link>
 cd A_Maze_ing
 ```
-When the repository is cloned, install poetry (it is recomended that for this step you use a virtual environment, also note that if the virtual environment you use is inside the project folder, there will be flake8 errors related to it):
-```bash
-pip install poetry
-```
-With poetry installed, you can install all of the dependencies required for this project with either one of the following commands:
+When the repository is cloned, install all of the required project dependencies (it is recomended that for this step you use a virtual environment, also note that if the virtual environment you use is inside the project folder, there will be flake8 errors related to it):
 ```bash
 make
 ```
@@ -60,6 +56,15 @@ make install
 ```
 ```bash
 poetry install
+```
+If there are any errors related to the installation of poetry through pip, try installing it manually with the following command:
+```bash
+pip install poetry
+```
+If errors prevail, try updating pip:
+```bash
+pip install update
+pip install --upgrade pip
 ```
 
 ### Execution
@@ -82,8 +87,8 @@ FLAG=<value>
 ```
 
 - Available flags:
-    - WIDTH <x> (min=9, max=100)
-    - HEIGHT <x> (min=7, max=100)
+    - WIDTH <x> (min=9, max=40)
+    - HEIGHT <x> (min=7, max=40)
     - ENTRY <x,y>
     - EXIT <x,y>
     - OUTPUT_FILE <file.txt>
@@ -100,24 +105,24 @@ FLAG=<value>
 The depth-first search algorithm starts the generation on the entry of the maze.
 While the maze is not fully generated, the algorithm will pick a random direction and move there if it has not been visited yet.
 When the algorithm gets to a dead-end, it traces back the path it made there until it finds a cell that has neighbours which have not been visited yet.
-If it backtracks all the way back to the start, then it means all the cells have been visited, therefore the maze has been fully generated, with all cells accessible (for the sole exception of the 42 pattern cells).
+If it backtracks all the way back to the entry of the maze, then it means all the cells have been visited, therefore the maze has been fully generated, with all cells accessible (for the sole exception of the 42 pattern cells).
 
 ### Hunt and Kill
 The hunt and kill algorithm starts the generation on the entry of the maze.
 While the maze is not fully generated, the algorithm will pick a random direction and move there if it has not been visited yet.
-When the algorithm gets to a dead-end, it looks from left to right and top to bottom of the maze until it finds a visited cell that has neighbours which have not been visited yet.
+When the algorithm gets to a dead-end, it looks from top to bottom and left to right of the maze until it finds a visited cell that has neighbours which have not been visited yet.
 If it gets to the bottom-right corner of the maze while looking for a cell to proceed maze generation and doesn't find any, then it means all the cells have been visited, therefore the maze has been fully generated, with all cells accessible (for the sole exception of the 42 pattern cells).
 
 ## Code Reusability
 
-- Mazegen module is reusable, by adding an \__init__.py inside the directory and adding mazegen in .toml file with poetry add mazegen
+The mazegen module is reusable, by adding an \_\_init\_\_.py inside the directory and adding mazegen in .toml file with poetry add mazegen
 
 ## Project Management
 
 ### Team Roles
 
-- vmesini-: Responsible for the display part (ANSI, walls and path) and user interation menu.
-- migteixe: Responsible for maze generation/solving algorithms and anything else related with the maze backend, such as generating the output file.
+- vmesini-: Responsible for the display part (ANSI, walls and path) and the user interation menu.
+- migteixe: Responsible for maze generation/solving algorithms and anything else related with the maze backend, such as generating the output file and the makefile.
 - Both parts were tested by both members of the group and both parties helped solve each other's errors.
 
 ### Anticipated planning and expectations
@@ -146,13 +151,9 @@ Artificial intelligence tools were used as a supporting resource throughout the 
 AI was used for the following tasks:
 
 - Git and GitHub workflow support
-- Understanding how branches, merges, rebases, pull requests, and detached HEAD states work.
-- Resolving merge conflicts.
 - Project structure and packaging.
-- Documentation.
-- Structuring this README.md according to 42 project requirements.
 - Code organization and refactoring.
-- Discussing ways to improve class design and separate responsibilities, particularly in the display and maze modules.
 - Clarifications about imports, ANSI color codes and standard Python behavior.
+- Documentation and README.md file development.
 
-AI was not used to generate the project architecture or final implementation automatically. All code included in the final submission was either written, reviewed, tested, or adapted manually by the authors. AI-generated code snippets were treated as reference material and were only incorporated after being fully understood and validated.
+AI was not used to generate the project architecture or final implementation automatically. All code included in the final submission was either written, reviewed, tested, or adapted manually by the authors. AI-generated code snippets were treated as reference material and were only incorporated after being validated and fully understood.
