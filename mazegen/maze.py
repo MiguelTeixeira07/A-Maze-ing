@@ -1,6 +1,5 @@
 import random as rand
 import time
-import os
 from collections.abc import Callable
 
 
@@ -227,7 +226,7 @@ class Maze:
             while not self.directions(cell) and history:
                 cell = history.pop()
 
-            os.system('clear')
+            print('\033[H')
             print('Maze generation algorithm: Depth-first search')
             print(
                 Display.print_maze(self, []),
@@ -269,7 +268,7 @@ class Maze:
                 cell = self.move(cell, direction)
                 cell.visited = True
 
-            os.system('clear')
+            print('\033[H')
             print('Maze generation algorithm: Hunt-and-kill')
             print(
                 Display.print_maze(self, []),
@@ -355,7 +354,7 @@ class Maze:
                 ):
                     cell = self.move(cell, 'East')
 
-                os.system('clear')
+                print('\033[H')
                 print('Maze generation algorithm:', end=' ', flush=True)
                 if base_algorithm == self.gen_dfs:
                     print('Depth-first search', flush=True)

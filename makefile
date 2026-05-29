@@ -1,7 +1,14 @@
+SHELL := /bin/bash
+
 MAIN = a_maze_ing.py
 CONFIG_FILE = default_config.txt
 
 EXECUTE = python3
+MUTE = > /dev/null
+
+PIP = -m pip install
+
+VENV = -m venv venv
 
 FLAKE = -m flake8 .
 
@@ -11,9 +18,12 @@ STRICT = --strict
 
 DEBUG = -m pdb
 
-FIND = find . -type d
-PYCACHE = -name '__pycache__'
-MYPY_CACHE = -name '.mypy_cache'
+FIND = find .
+PYCACHE = -type d -name '__pycache__'
+MYPY_CACHE = -type d -name '.mypy_cache'
+VENV_DIR = -type d -name 'venv'
+TXT = -type f -name '*.txt'
+CONFIG = -name '$(CONFIG_FILE)'
 REMOVE = -exec rm -rf {} +
 
 
@@ -23,7 +33,11 @@ all: install
 
 install:
 	echo 'Installing dependencies...'
-	poetry install > /dev/null
+	$(FIND) $(VENV_DIR) $(REMOVE) && \
+	$(EXECUTE) $(VENV) && \
+	source venv/bin/activate && \
+	$(EXECUTE) $(PIP) poetry $(MUTE) && \
+	poetry install $(MUTE)
 	echo 'Done.'
 	echo ''
 
@@ -39,6 +53,8 @@ clean:
 	echo 'Cleaning caches and temporary files...'
 	$(FIND) $(PYCACHE) $(REMOVE)
 	$(FIND) $(MYPY_CACHE) $(REMOVE)
+	$(FIND) $(TXT) ! $(CONFIG) $(REMOVE)
+	$(FIND) $(VENV_DIR) $(REMOVE)
 	echo 'Done.'
 	echo ''
 

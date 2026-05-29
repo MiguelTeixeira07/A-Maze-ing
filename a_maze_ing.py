@@ -11,12 +11,14 @@ from display import Display
 
 
 def main_loop(
+    seed: int,
     flags: dict[str, Any],
     maze: Maze,
     path: tuple[list[Maze.Cell], str],
     printing_path: bool,
-    gen_algorithm: Callable[[], None]
-) -> tuple[Maze, tuple[list[Maze.Cell], str], bool, Callable[[], None]]:
+    gen_algorithm: Callable[[], None],
+    i: int
+) -> tuple[Maze, tuple[list[Maze.Cell], str], bool, Callable[[], None], int]:
     """Main program loop function.
 
     This is the code that will be executed on the main program loop. When this
@@ -38,6 +40,7 @@ def main_loop(
         next iteration.
     """
     os.system('clear')
+    print()
     print('Maze generation algorithm:', end=' ')
     if gen_algorithm == maze.gen_dfs:
         print('Depth-first search')
@@ -48,12 +51,19 @@ def main_loop(
             maze,
             path[0][1:] if printing_path else []
         ),
-        '\n=== A-maze-ing ===\n',
-        '1 - Regenerate a new maze',
-        '2 - Switch maze generation algorithm',
-        '3 - Show/Hide path from entry to exit',
-        '4 - Rotate maze colors',
-        '5 - Quit\n\n', sep='\n', flush=True
+        '\n\n\t    === OPTIONS ===\t\t|',
+        '      === MAZE STATS ===\n',
+        '1 - Regenerate a new maze\t\t|',
+        f'   Solution path length: {len(path[0])}\n',
+        '2 - Switch maze generation algorithm\t|',
+        f'   Seed: {seed} | Iteration: {i}\n',
+        '3 - Show/Hide path from entry to exit\t|',
+        f'   Height: {maze.height}\n',
+        '4 - Rotate maze colors\t\t\t|',
+        f'   Width: {maze.width}\n',
+        '5 - Quit\t\t\t\t|',
+        f'   Total area: {maze.height * maze.width}\n',
+        sep='', flush=True
     )
     choice: str = input()
 
@@ -81,7 +91,7 @@ def main_loop(
             maze = new_maze
             path = solve(maze)
 
-            return maze, path, printing_path, gen_algorithm
+            return maze, path, printing_path, gen_algorithm, i + 1
 
         # Change maze generation algorithm
         case '2':
@@ -90,7 +100,7 @@ def main_loop(
             else:
                 gen_algorithm = maze.gen_dfs
 
-            return maze, path, printing_path, gen_algorithm
+            return maze, path, printing_path, gen_algorithm, i + 1
 
         # Show/Hide path from entry to exit
         case '3':
@@ -118,7 +128,7 @@ def main_loop(
             )
             sys.exit(0)
 
-    return maze, path, printing_path, gen_algorithm
+    return maze, path, printing_path, gen_algorithm, i + 1
 
 
 def main() -> None:
@@ -144,6 +154,8 @@ def main() -> None:
         return
 
     # After checking, initialize everything
+    seed = rand.randint(100000000, 999999999)
+    rand.seed(seed)
     init(autoreset=True)
     Display.set_colors()
     maze: Maze = Maze(
@@ -153,6 +165,7 @@ def main() -> None:
         flags['exit']
     )
     printing_path: bool = True
+    i: int = 1
 
     # Generate the maze once before the first choice
     algorithm: Callable[[], None] = rand.choice([maze.gen_dfs, maze.gen_hak])
@@ -172,12 +185,14 @@ def main() -> None:
     # User input part is in an infinite loop, program will only close when the
     # user slects option 5
     while True:
-        maze, path, printing_path, algorithm = main_loop(
+        maze, path, printing_path, algorithm, i = main_loop(
+            seed,
             flags,
             maze,
             path,
             printing_path,
-            algorithm
+            algorithm,
+            i
         )
 
 
