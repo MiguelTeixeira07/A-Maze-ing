@@ -1,5 +1,5 @@
 from collections import deque
-from mazegen.maze import Maze
+from maze import Maze
 
 
 def solve(maze: Maze) -> tuple[list[Maze.Cell], str]:

@@ -1,7 +1,6 @@
 from typing import Optional as Opt
 from collections.abc import Callable
-from .walls import Walls
-from mazegen.maze import Maze
+from maze import Maze
 from .colors import random_color
 
 
@@ -40,18 +39,20 @@ class Display:
         """
 
         output: str = ''
-        east_west: Callable[[str], str] = lambda c: (
-            '█' + c + '███' + cls.colors['g_color'] + '█'
-        )
-        west: Callable[[str], str] = lambda c: (
-            '█' + c + '███ '
-        )
-        east: Callable[[str], str] = lambda c: (
-            c + ' ███' + cls.colors['g_color'] + '█'
-        )
-        none: Callable[[str], str] = lambda c: (
-            c + ' ███ '
-        )
+
+        walls: dict[str, Callable[[str], str]] = {
+            'both': lambda c: '█' + c + '███' + cls.colors['g_color'] + '█',
+            'west': lambda c: '█' + c + '███ ',
+            'east': lambda c: c + ' ███' + cls.colors['g_color'] + '█',
+            'none': lambda c: c + ' ███ '
+        }
+
+        str_walls: dict[str, str] = {
+            'both': '█   █',
+            'west': '█    ',
+            'east': '    █',
+            'none': '     '
+        }
 
         for row in maze.grid:
             for i in range(2):
@@ -59,83 +60,44 @@ class Display:
 
                 output += cls.colors['g_color'] + '██'
                 for cell in row:
+                    walls_to_print: str = 'none'
+                    cell_color: str | None = None
+                    if cell.start:
+                        cell_color = cls.colors['entry_color']
+                    elif cell.exit:
+                        cell_color = cls.colors['exit_color']
+                    elif cell in solution:
+                        cell_color = cls.colors['path_color']
+
+                    # This block prints the top wall of wach cell
                     if i == 0:
                         if cell.walls['North']:
                             output += cls.colors['g_color']
-                            output += str(Walls.TOP)
+                            output += '█████'
                         else:
                             output += cls.colors['g_color']
-                            output += str(Walls.LEFT_AND_RIGHT)
+                            output += str_walls['both']
+                    # This block is prints the side walls of each cell
                     else:
                         if all(w for w in cell.walls.values()):
-                            output += east_west(cls.colors['logo_color'])
+                            output += walls['both'](
+                                cls.colors['logo_color']
+                            )
                         else:
                             if cell.walls['East'] and cell.walls['West']:
-                                if cell.start:
-                                    output += east_west(
-                                        cls.colors['entry_color']
-                                    )
-                                elif cell.exit:
-                                    output += east_west(
-                                        cls.colors['exit_color']
-                                    )
-                                elif cell in solution:
-                                    output += east_west(
-                                        cls.colors['path_color']
-                                    )
-                                else:
-                                    output += cls.colors['g_color']
-                                    output += str(Walls.LEFT_AND_RIGHT)
+                                walls_to_print = 'both'
                             else:
                                 if cell.walls['West']:
-                                    if cell.start:
-                                        output += west(
-                                            cls.colors['entry_color']
-                                        )
-                                    elif cell.exit:
-                                        output += west(
-                                            cls.colors['exit_color']
-                                        )
-                                    elif cell in solution:
-                                        output += west(
-                                            cls.colors['path_color']
-                                        )
-                                    else:
-                                        output += cls.colors['g_color']
-                                        output += str(Walls.LEFT)
+                                    walls_to_print = 'west'
 
                                 elif cell.walls['East']:
-                                    if cell.start:
-                                        output += east(
-                                            cls.colors['entry_color']
-                                        )
-                                    elif cell.exit:
-                                        output += east(
-                                            cls.colors['exit_color']
-                                        )
-                                    elif cell in solution:
-                                        output += east(
-                                            cls.colors['path_color']
-                                        )
-                                    else:
-                                        output += cls.colors['g_color']
-                                        output += str(Walls.RIGHT)
-                                else:
-                                    if cell.start:
-                                        output += none(
-                                            cls.colors['entry_color']
-                                        )
-                                    elif cell.exit:
-                                        output += none(
-                                            cls.colors['exit_color']
-                                        )
-                                    elif cell in solution:
-                                        output += none(
-                                            cls.colors['path_color']
-                                        )
-                                    else:
-                                        output += cls.colors['g_color']
-                                        output += str(Walls.EMPTY)
+                                    walls_to_print = 'east'
+
+                            if cell_color:
+                                output += walls[walls_to_print](cell_color)
+                            else:
+                                output += cls.colors['g_color']
+                                output += str_walls[walls_to_print]
 
                     if place_in_row == maze.width - 1:
                         output += '██\n'

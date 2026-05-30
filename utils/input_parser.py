@@ -36,6 +36,8 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
                 continue
 
             flag, str_value = line.split('=')
+            if ' ' in str_value:
+                raise SyntaxError
             if (
                 flag in ('ENTRY', 'EXIT') and
                 (
@@ -49,13 +51,13 @@ def get_flags(config_file_path: str) -> dict[str, Any]:
                 flag == 'OUTPUT_FILE' and
                 (
                     len(str_value.split('.')) != 2 or
-                    str_value.split('.')[1] != 'txt\n'
+                    str_value.split('.')[1].strip('\n') != 'txt'
                 )
             ):
                 raise SyntaxError
             if (
                 flag == 'PERFECT' and
-                str_value not in ('True', 'False')
+                str_value.strip('\n') not in ('True', 'False')
             ):
                 raise SyntaxError
 
@@ -88,9 +90,11 @@ def verify_flags(flags: dict[str, Any]) -> bool:
     if flags['width'] < 1 or flags['height'] < 1:
         return False
 
-    if flags['width'] > 100 or flags['width'] < 9:
+    if flags['width'] > 40 or flags['width'] < 9:
         return False
-    if flags['height'] > 100 or flags['height'] < 7:
+    if flags['height'] > 20 or flags['height'] < 7:
+        return False
+    if flags['entry'] == flags['exit']:
         return False
 
     if flags['entry'][0] < 0 or flags['entry'][1] < 0:

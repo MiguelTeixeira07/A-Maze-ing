@@ -4,7 +4,7 @@ import random as rand
 from typing import Any
 from collections.abc import Callable
 from colorama import init
-from mazegen.maze import Maze
+from maze import Maze
 from utils.input_parser import get_flags, verify_flags
 from utils.solution import solve
 from display import Display
@@ -16,9 +16,8 @@ def main_loop(
     maze: Maze,
     path: tuple[list[Maze.Cell], str],
     printing_path: bool,
-    gen_algorithm: Callable[[], None],
-    i: int
-) -> tuple[Maze, tuple[list[Maze.Cell], str], bool, Callable[[], None], int]:
+    gen_algorithm: Callable[[], None]
+) -> tuple[Maze, tuple[list[Maze.Cell], str], bool, Callable[[], None]]:
     """Main program loop function.
 
     This is the code that will be executed on the main program loop. When this
@@ -56,7 +55,7 @@ def main_loop(
         '1 - Regenerate a new maze\t\t|',
         f'   Solution path length: {len(path[0])}\n',
         '2 - Switch maze generation algorithm\t|',
-        f'   Seed: {seed} | Iteration: {i}\n',
+        f'   Seed: {seed}\n',
         '3 - Show/Hide path from entry to exit\t|',
         f'   Height: {maze.height}\n',
         '4 - Rotate maze colors\t\t\t|',
@@ -91,7 +90,7 @@ def main_loop(
             maze = new_maze
             path = solve(maze)
 
-            return maze, path, printing_path, gen_algorithm, i + 1
+            return maze, path, printing_path, gen_algorithm
 
         # Change maze generation algorithm
         case '2':
@@ -100,7 +99,7 @@ def main_loop(
             else:
                 gen_algorithm = maze.gen_dfs
 
-            return maze, path, printing_path, gen_algorithm, i + 1
+            return maze, path, printing_path, gen_algorithm
 
         # Show/Hide path from entry to exit
         case '3':
@@ -128,7 +127,7 @@ def main_loop(
             )
             sys.exit(0)
 
-    return maze, path, printing_path, gen_algorithm, i + 1
+    return maze, path, printing_path, gen_algorithm
 
 
 def main() -> None:
@@ -165,9 +164,9 @@ def main() -> None:
         flags['exit']
     )
     printing_path: bool = True
-    i: int = 1
 
     # Generate the maze once before the first choice
+    os.system('clear')
     algorithm: Callable[[], None] = rand.choice([maze.gen_dfs, maze.gen_hak])
     if flags['perfect']:
         algorithm()
@@ -185,16 +184,20 @@ def main() -> None:
     # User input part is in an infinite loop, program will only close when the
     # user slects option 5
     while True:
-        maze, path, printing_path, algorithm, i = main_loop(
+        maze, path, printing_path, algorithm = main_loop(
             seed,
             flags,
             maze,
             path,
             printing_path,
             algorithm,
-            i
         )
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)
+    except Exception:
+        sys.exit(0)

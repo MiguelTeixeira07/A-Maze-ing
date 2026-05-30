@@ -131,18 +131,6 @@ files = [
 ]
 
 [[package]]
-name = "mazegen"
-version = "0.0.2"
-description = "Python utility to generate and solve mazes."
-optional = false
-python-versions = ">=3.6"
-groups = ["main"]
-files = [
-    {file = "mazegen-0.0.2-py3-none-any.whl", hash = "sha256:2529dc4e4d00fc58cfd9428357f4999a2e6ec66a82333021c9ea498028bf5044"},
-    {file = "mazegen-0.0.2.tar.gz", hash = "sha256:69bf0331ddb7e94a922e0620095fbe5686174413e6b5a67a80b3f97b8cca5674"},
-]
-
-[[package]]
 name = "mccabe"
 version = "0.7.0"
 description = "McCabe checker, plugin for flake8"
@@ -338,18 +326,6 @@ files = [
 ]
 
 [[package]]
-name = "types-colorama"
-version = "0.4.15.20260508"
-description = "Typing stubs for colorama"
-optional = false
-python-versions = ">=3.10"
-groups = ["main"]
-files = [
-    {file = "types_colorama-0.4.15.20260508-py3-none-any.whl", hash = "sha256:b0c39908a3e5171ef1f8bf3d59fae082e9eaff3a19ca49b6d640b83f78cff61c"},
-    {file = "types_colorama-0.4.15.20260508.tar.gz", hash = "sha256:3a8916039e57452bd21f57e674e1f221ca9e4f319893c5e3bbd37b845c27d8e6"},
-]
-
-[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 description = "Backported and Experimental Type Hints for Python 3.9+"
@@ -363,5 +339,5 @@ files = [
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.10"
-content-hash = "7dbea67981e6540b9a933732a612366875c36deedcc6a604a01706210dab3acd"
+python-versions = ">=3.10"
+content-hash = "802c47a37b4b3352ac5beab82a78dc930c4c6404ed6775204bdcd61e70e686c0"
